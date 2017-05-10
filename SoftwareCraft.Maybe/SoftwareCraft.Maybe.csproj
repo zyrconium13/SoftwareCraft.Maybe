@@ -1,7 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>SoftwareCraft</Authors>
+    <Company>SoftwareCraft</Company>
+    <Description>SoftwareCraft.Maybe represents the OOP implementation of a functional concept. Instead of returning null, return a Maybe, and the code will be much cleaner and the intent much clearer.</Description>
+    <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
+    <PackageTags>maybe c-sharp functional-programming dotnetcore</PackageTags>
+    <PackageReleaseNotes>Added comments and signed the library.</PackageReleaseNotes>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <FileVersion>1.0.0.1</FileVersion>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>SoftwareCraftKey.pfx</AssemblyOriginatorKeyFile>
+    <DelaySign>False</DelaySign>
+    <Version>1.0.0.1</Version>
   </PropertyGroup>
 
 </Project>
