@@ -9,13 +9,15 @@
     <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
     <PackageTags>maybe c-sharp functional-programming dotnetcore</PackageTags>
-    <PackageReleaseNotes>Added comments and signed the library.</PackageReleaseNotes>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <FileVersion>1.0.0.1</FileVersion>
+    <PackageReleaseNotes>Refactored tests.
+Added async versions for Map and FromResult.
+Added lazy evaluating version for ValueOrDefault.</PackageReleaseNotes>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <FileVersion>1.0.0.2</FileVersion>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>SoftwareCraftKey.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
-    <Version>1.0.0.1</Version>
+    <Version>1.0.0.2</Version>
   </PropertyGroup>
 
 </Project>
