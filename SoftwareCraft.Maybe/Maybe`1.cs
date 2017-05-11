@@ -46,7 +46,22 @@ namespace SoftwareCraft.Maybe
 		/// <param name="surrogateFactory">The output of this <see cref="Func{TResult}"/> will be returned if the current instance does not contain a value.</param>
 		public T ValueOrDefault(Func<T> surrogateFactory)
 		{
+			if (surrogateFactory == null) throw new ArgumentNullException(nameof(surrogateFactory));
+
 			return items.Length == 0 ? surrogateFactory() : items[0];
+		}
+
+		/// <summary>
+		/// Provides a safe way to retrieve the contained value, allowing for lazy asynchronous evaluation of the default value.
+		/// </summary>
+		/// <param name="surrogateFactory">The output of this <see cref="Func{TResult}"/> will be returned if the current instance does not contain a value.</param>
+		public Task<T> ValueOrDefaultAsync(Func<T> surrogateFactory)
+		{
+			if (surrogateFactory == null) throw new ArgumentNullException(nameof(surrogateFactory));
+
+			return items.Length == 0
+				? Task.Run(() => surrogateFactory())
+				: Task.FromResult(items[0]);
 		}
 
 		/// <summary>

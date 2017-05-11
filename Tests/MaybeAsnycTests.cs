@@ -5,6 +5,31 @@ using Xunit;
 
 namespace Tests
 {
+	public class MaybeAsyncTests
+	{
+		[Fact]
+		public async Task Empty_maybe_returns_factory_default_value_async()
+		{
+			var expected = new object();
+
+			var sut = new Maybe<object>();
+
+			Func<object> defaultFactory = () => expected;
+
+			object actual = await sut.ValueOrDefaultAsync(defaultFactory);
+
+			Assert.Same(expected, actual);
+		}
+
+		[Fact]
+		public async Task Null_default_value_factory_throws_exception_async()
+		{
+			var sut = new Maybe<object>();
+
+			await Assert.ThrowsAsync<ArgumentNullException>(() => sut.ValueOrDefaultAsync(null)).ConfigureAwait(false);
+		}
+	}
+
 	public class MaybeMapAsyncTests
 	{
 		[Fact]
