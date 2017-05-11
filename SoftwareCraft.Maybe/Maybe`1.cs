@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SoftwareCraft.Maybe
 {
@@ -34,10 +35,18 @@ namespace SoftwareCraft.Maybe
 		/// Provides a safe way to retrieve the contained value.
 		/// </summary>
 		/// <param name="surrogate">This will be returned if the current instance does not contain a value.</param>
-		/// <returns></returns>
 		public T ValueOrDefault(T surrogate)
 		{
 			return items.Length == 0 ? surrogate : items[0];
+		}
+
+		/// <summary>
+		/// Provides a safe way to retrieve the contained value, allowing for lazy evaluation of the default value.
+		/// </summary>
+		/// <param name="surrogateFactory">The output of this <see cref="Func{TResult}"/> will be returned if the current instance does not contain a value.</param>
+		public T ValueOrDefault(Func<T> surrogateFactory)
+		{
+			return items.Length == 0 ? surrogateFactory() : items[0];
 		}
 
 		/// <summary>
@@ -82,6 +91,35 @@ namespace SoftwareCraft.Maybe
 			if (result == null) return new Maybe<T>();
 
 			return new Maybe<T>(result);
+		}
+
+		/// <summary>
+		/// Allows specifying actions that will be called if the current instance contains a value or not. The delegates will be executed asynchronously.
+		/// </summary>
+		/// <param name="some">The action that will be called if the current instance contains a value.</param>
+		public Task MapAsync(Action<T> some)
+		{
+			return Task.Run(() => Map(some));
+		}
+
+		/// <summary>
+		/// Allows specifying actions that will be called if the current instance contains a value or not. The delegates will be executed asynchronously.
+		/// </summary>
+		/// <param name="some">The action that will be called if the current instance contains a value.</param>
+		/// <param name="nothing">The action that will be called if the current instance does not contain a value.</param>
+		public Task MapAsync(Action<object> some, Action nothing)
+		{
+			return Task.Run(() => Map(some, nothing));
+		}
+
+		/// <summary>
+		/// Facilitates wrapping an existing method that currently returns a single instance of an object, but may also return null. The method will be executed asynchronously.
+		/// </summary>
+		/// <param name="func">The function whose result must be converted to a <see cref="Maybe{T}"/>.</param>
+		/// <returns></returns>
+		public static Task<Maybe<T>> FromResultAsync(Func<T> func)
+		{
+			return Task.Run(() => FromResult(func));
 		}
 	}
 }

@@ -32,6 +32,31 @@ namespace Tests
 		}
 
 		[Fact]
+		public void Empty_maybe_returns_factory_provided_value()
+		{
+			var expected = new object();
+
+			var sut = new Maybe<object>();
+
+			Func<object> defaultFactory = () => expected;
+
+			var actual = sut.ValueOrDefault(defaultFactory);
+
+			Assert.Same(expected, actual);
+		}
+
+		[Fact]
+		public void Null_default_factory_throws_exception()
+		{
+			var sut = new Maybe<object>();
+
+			Assert.Throws<ArgumentNullException>(() => sut.ValueOrDefault(null));
+		}
+	}
+
+	public class MaybeMapTests
+	{
+		[Fact]
 		public void Maybe_calls_SOME_callback()
 		{
 			var sut = new Maybe<object>(new object());
@@ -87,7 +112,10 @@ namespace Tests
 
 			Assert.Throws<ArgumentNullException>(() => sut.Map((i) => { }, null));
 		}
+	}
 
+	public class MaybeFromResultTests
+	{
 		[Fact]
 		public void Wrap_method_output_into_maybe()
 		{
