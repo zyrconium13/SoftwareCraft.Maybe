@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>SoftwareCraft</Authors>
     <Company>SoftwareCraft</Company>
@@ -9,15 +9,14 @@
     <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
     <PackageTags>maybe c-sharp functional-programming dotnetcore</PackageTags>
-    <PackageReleaseNotes>Refactored tests.
-Added async versions for Map and FromResult.
-Added lazy evaluating version for ValueOrDefault.</PackageReleaseNotes>
-    <AssemblyVersion>1.0.0.2</AssemblyVersion>
-    <FileVersion>1.0.0.2</FileVersion>
-    <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>SoftwareCraftKey.pfx</AssemblyOriginatorKeyFile>
-    <DelaySign>False</DelaySign>
-    <Version>1.0.0.2</Version>
+    <PackageReleaseNotes>Added Map overload that returns a value.</PackageReleaseNotes>
+    <AssemblyVersion>1.0.0.3</AssemblyVersion>
+    <FileVersion>1.0.0.3</FileVersion>
+    <Version>1.0.0.3</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
 </Project>

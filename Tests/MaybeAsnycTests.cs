@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SoftwareCraft.Maybe;
 using Xunit;
@@ -16,7 +17,7 @@ namespace Tests
 
 			Func<object> defaultFactory = () => expected;
 
-			object actual = await sut.ValueOrDefaultAsync(defaultFactory);
+			var actual = await sut.ValueOrDefaultAsync(defaultFactory);
 
 			Assert.Same(expected, actual);
 		}
@@ -33,13 +34,25 @@ namespace Tests
 	public class MaybeMapAsyncTests
 	{
 		[Fact]
+		public async Task Maybe_calls_NOTHING_callback_async()
+		{
+			var nothingCallbackCalled = false;
+
+			var sut = new Maybe<object>();
+
+			await sut.MapAsync(o => { }, () => nothingCallbackCalled = true).ConfigureAwait(false);
+
+			Assert.True(nothingCallbackCalled);
+		}
+
+		[Fact]
 		public async Task Maybe_calls_SOME_callback_async()
 		{
 			var someCallbackCalled = false;
 
 			var sut = new Maybe<object>(new object());
 
-			await sut.MapAsync((o) => someCallbackCalled = true).ConfigureAwait(false);
+			await sut.MapAsync(o => someCallbackCalled = true).ConfigureAwait(false);
 
 			Assert.True(someCallbackCalled);
 		}
@@ -51,25 +64,17 @@ namespace Tests
 
 			var sut = new Maybe<object>(new object());
 
-			await sut.MapAsync(
-				(o) => someCallbackCalled = true,
-				() => { }).ConfigureAwait(false);
+			await sut.MapAsync(o => someCallbackCalled = true, () => { }).ConfigureAwait(false);
 
 			Assert.True(someCallbackCalled);
 		}
 
 		[Fact]
-		public async Task Maybe_calls_NOTHING_callback_async()
+		public async Task Null_NOTHING_callback_throws_exception_async()
 		{
-			var nothingCallbackCalled = false;
-
 			var sut = new Maybe<object>();
 
-			await sut.MapAsync(
-				(o) => { },
-				() => nothingCallbackCalled = true).ConfigureAwait(false);
-
-			Assert.True(nothingCallbackCalled);
+			await Assert.ThrowsAsync<ArgumentNullException>(() => sut.MapAsync(o => { }, null)).ConfigureAwait(false);
 		}
 
 		[Fact]
@@ -79,42 +84,53 @@ namespace Tests
 
 			await Assert.ThrowsAsync<ArgumentNullException>(() => sut.MapAsync(null)).ConfigureAwait(false);
 		}
+	}
 
+	public class MaybeReturnMapAsyncTests
+	{
 		[Fact]
-		public async Task Null_NOTHING_callback_throws_exception_async()
+		public async Task NOTHING_returns_result()
 		{
+			var expectedObject = new object();
+
 			var sut = new Maybe<object>();
 
-			await Assert.ThrowsAsync<ArgumentNullException>(() => sut.MapAsync((o) => { }, null)).ConfigureAwait(false);
+			var actualObject = await sut.MapAsync(x => null, () => expectedObject);
+
+			Assert.Equal(expectedObject, actualObject);
+		}
+
+		[Fact]
+		public async Task Null_NOTHING_callback_throws_exception()
+		{
+			var sut = new Maybe<object>(new object());
+
+			await Assert.ThrowsAsync<ArgumentNullException>(() => sut.MapAsync(x => Task.FromResult(new object()), null));
+		}
+
+		[Fact]
+		public async Task Null_SOME_callback_throws_exception()
+		{
+			var sut = new Maybe<object>(new object());
+
+			await Assert.ThrowsAsync<ArgumentNullException>(() => sut.MapAsync(null, () => new object()));
+		}
+
+		[Fact]
+		public async Task SOME_returns_result()
+		{
+			var expectedObject = new object();
+
+			var sut = new Maybe<object>(expectedObject);
+
+			var actualObject = await sut.MapAsync(x => x, () => null);
+
+			Assert.Equal(expectedObject, actualObject);
 		}
 	}
 
 	public class MaybeFromResultAsyncTests
 	{
-		[Fact]
-		public async Task Wrap_method_output_into_maybe_async()
-		{
-			var expected = new object();
-
-			Func<object> func = () => expected;
-
-			var actual = await Maybe<object>.FromResultAsync(func).ConfigureAwait(false);
-
-			Assert.Same(expected, actual.ValueOrDefault(new object()));
-		}
-
-		[Fact]
-		public async Task Wrap_method_null_output_into_maybe_async()
-		{
-			var expected = new object();
-
-			Func<object> func = () => null;
-
-			var actual = await Maybe<object>.FromResultAsync(func).ConfigureAwait(false);
-
-			Assert.Same(expected, actual.ValueOrDefault(expected));
-		}
-
 		[Fact]
 		public async Task Handling_maybe_of_task_of_object()
 		{
@@ -125,6 +141,30 @@ namespace Tests
 			var actual = await Maybe<Task<object>>.FromResultAsync(func).ConfigureAwait(false);
 
 			Assert.Same(expected, await actual.ValueOrDefault(Task.FromResult(new object())).ConfigureAwait(false));
+		}
+
+		[Fact]
+		public async Task Wrap_method_null_output_into_maybe_async()
+		{
+			var expected = new object();
+
+			object Func() => null;
+
+			var actual = await Maybe<object>.FromResultAsync(Func).ConfigureAwait(false);
+
+			Assert.Same(expected, actual.ValueOrDefault(expected));
+		}
+
+		[Fact]
+		public async Task Wrap_method_output_into_maybe_async()
+		{
+			var expected = new object();
+
+			Func<object> func = () => expected;
+
+			var actual = await Maybe<object>.FromResultAsync(func).ConfigureAwait(false);
+
+			Assert.Same(expected, actual.ValueOrDefault(new object()));
 		}
 	}
 }
