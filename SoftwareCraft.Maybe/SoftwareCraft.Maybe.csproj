@@ -1,24 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Authors>SoftwareCraft</Authors>
-    <Company>SoftwareCraft</Company>
-    <Description>SoftwareCraft.Maybe represents the OOP implementation of a functional concept. Instead of returning null, return a Maybe, and the code will be much cleaner and the intent much clearer.</Description>
-    <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
-    <PackageTags>maybe c-sharp functional-programming dotnetcore</PackageTags>
-    <PackageReleaseNotes>Added Map overload that returns a value.</PackageReleaseNotes>
-    <AssemblyVersion>1.0.0.3</AssemblyVersion>
-    <FileVersion>1.0.0.3</FileVersion>
-    <Version>1.0.0.3</Version>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>SoftwareCraftKey.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>latest</LangVersion>
+    <DelaySign>false</DelaySign>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0.4</Version>
+    <Authors>SoftwareCraft</Authors>
+    <Description>SoftwareCraft.Maybe represents the OOP implementation of a functional concept. Instead of returning null, return a Maybe, and the code will be much cleaner and the intent much clearer.</Description>
+    <Copyright>SoftwareCraft © 2018</Copyright>
+    <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
+    <PackageTags>maybe c-sharp functional-programming dotnetcore dotnetstandard</PackageTags>
+    <PackageReleaseNotes>Recompiled against .NET Standard.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
   </PropertyGroup>
 
 </Project>

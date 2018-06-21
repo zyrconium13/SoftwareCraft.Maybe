@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+// ReSharper disable InconsistentNaming
 
 namespace SoftwareCraft.Maybe
 {
@@ -66,7 +67,7 @@ namespace SoftwareCraft.Maybe
 			if (surrogateFactory == null) throw new ArgumentNullException(nameof(surrogateFactory));
 
 			return items.Length == 0 ?
-				Task.Run(() => surrogateFactory()) :
+				Task.Run(surrogateFactory) :
 				Task.FromResult(items[0]);
 		}
 

@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using SoftwareCraft.Maybe;
 using Xunit;
 
@@ -15,9 +14,9 @@ namespace Tests
 
 			var sut = new Maybe<object>();
 
-			Func<object> defaultFactory = () => expected;
+			object DefaultFactory() => expected;
 
-			var actual = sut.ValueOrDefault(defaultFactory);
+			var actual = sut.ValueOrDefault(DefaultFactory);
 
 			Assert.Same(expected, actual);
 		}
@@ -159,8 +158,6 @@ namespace Tests
 		}
 	}
 
-	
-
 	public class MaybeFromResultTests
 	{
 		[Fact]
@@ -174,9 +171,9 @@ namespace Tests
 		{
 			var expected = new object();
 
-			Func<object> func = () => null;
+			object Func() => null;
 
-			var actual = Maybe<object>.FromResult(func);
+			var actual = Maybe<object>.FromResult(Func);
 
 			Assert.Same(expected, actual.ValueOrDefault(expected));
 		}
@@ -187,9 +184,9 @@ namespace Tests
 			var expected = new object();
 			var other = new object();
 
-			Func<object> func = () => expected;
+			object Func() => expected;
 
-			var actual = Maybe<object>.FromResult(func);
+			var actual = Maybe<object>.FromResult(Func);
 
 			Assert.Same(expected, actual.ValueOrDefault(other));
 		}

@@ -15,9 +15,9 @@ namespace Tests
 
 			var sut = new Maybe<object>();
 
-			Func<object> defaultFactory = () => expected;
+			object DefaultFactory() => expected;
 
-			var actual = await sut.ValueOrDefaultAsync(defaultFactory);
+			var actual = await sut.ValueOrDefaultAsync(DefaultFactory);
 
 			Assert.Same(expected, actual);
 		}
@@ -136,9 +136,9 @@ namespace Tests
 		{
 			var expected = new object();
 
-			Func<Task<object>> func = () => Task.FromResult(expected);
+			Task<object> Func() => Task.FromResult(expected);
 
-			var actual = await Maybe<Task<object>>.FromResultAsync(func).ConfigureAwait(false);
+			var actual = await Maybe<Task<object>>.FromResultAsync(Func).ConfigureAwait(false);
 
 			Assert.Same(expected, await actual.ValueOrDefault(Task.FromResult(new object())).ConfigureAwait(false));
 		}
@@ -160,9 +160,9 @@ namespace Tests
 		{
 			var expected = new object();
 
-			Func<object> func = () => expected;
+			object Func() => expected;
 
-			var actual = await Maybe<object>.FromResultAsync(func).ConfigureAwait(false);
+			var actual = await Maybe<object>.FromResultAsync(Func).ConfigureAwait(false);
 
 			Assert.Same(expected, actual.ValueOrDefault(new object()));
 		}
