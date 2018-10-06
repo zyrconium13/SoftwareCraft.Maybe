@@ -3,79 +3,18 @@ using System.Linq;
 
 namespace SoftwareCraft.Maybe
 {
-	/// <summary>
-	///     Provides a way to represent data that may or may not contain a value. Use it instead of returning null.
-	/// </summary>
-	/// <typeparam name="T">The type of the contained value. Must be a reference type.</typeparam>
-	public class Maybe<T>
+	public abstract class Maybe<T>
 	{
-		private readonly T[] items;
+		protected T[] Items;
 
-		/// <summary>
-		///     Creates an instance that does not contain a value.
-		/// </summary>
-		public Maybe() => items = new T[0];
+		public abstract bool HasValue { get; }
 
-		/// <summary>
-		///     Creates an instance that contains a value.
-		/// </summary>
-		/// <param name="value"></param>
-		public Maybe(T value) => items = new[]
-		                                 {
-			                                 value
-		                                 };
+		public virtual void Map(Action<T> some) { }
 
-		public bool HasValue => items.Length == 1;
+		public abstract void Map(Action<T> some, Action none);
 
-		/// <summary>
-		///     Allows specifying actions that will be called if the current instance contains a value or not.
-		/// </summary>
-		/// <param name="some">The action that will be called if the current instance contains a value.</param>
-		public void Map(Action<T> some)
-		{
-			if (some == null) throw new ArgumentNullException(nameof(some));
+		public abstract U Map<U>(Func<T, U> some, Func<U> none);
 
-			if (items.Length != 0) some(items[0]);
-		}
-
-		/// <summary>
-		///     Allows specifying actions that will be called if the current instance contains a value or not.
-		/// </summary>
-		/// <param name="some">The action that will be called if the current instance contains a value.</param>
-		/// <param name="nothing">The action that will be called if the current instance does not contain a value.</param>
-		public void Map(Action<T> some, Action nothing)
-		{
-			if (some == null) throw new ArgumentNullException(nameof(some));
-			if (nothing == null) throw new ArgumentNullException(nameof(nothing));
-
-			if (items.Length == 0)
-				nothing();
-			else
-				some(items[0]);
-		}
-
-		/// <summary>
-		///     Allows specifying actions that will be called if the current instance contains a value or not.
-		/// </summary>
-		/// <param name="some">The action that will be called if the current instance contains a value.</param>
-		/// <param name="nothing">The action that will be called if the current instance does not contain a value.</param>
-		/// <returns>Returns the value provided by either of the delegate functions.</returns>
-		public U Map<U>(Func<T, U> some, Func<U> nothing)
-		{
-			if (some == null) throw new ArgumentNullException(nameof(some));
-			if (nothing == null) throw new ArgumentNullException(nameof(nothing));
-
-			return items.Length == 0 ?
-				nothing() :
-				some(items[0]);
-		}
-
-		/// <summary>
-		///     Facilitates wrapping an existing method that currently returns a single instance of an object, but may also return
-		///     null.
-		/// </summary>
-		/// <param name="func">The function whose result must be converted to a <see cref="Maybe{T}" />.</param>
-		/// <returns></returns>
 		public static Maybe<T> Wrap(Func<T> func)
 		{
 			if (func == null) throw new ArgumentNullException(nameof(func));
@@ -83,11 +22,60 @@ namespace SoftwareCraft.Maybe
 			var result = func();
 
 			return result == null ?
-				new Maybe<T>() :
-				new Maybe<T>(result);
+				(Maybe<T>) new None<T>() :
+				new Some<T>(result);
 		}
 
 		public Maybe<U> Bind<U>(Func<T, Maybe<U>> func)
-			=> Map(func, () => new Maybe<U>());
+			=> Map(func, () => new None<U>());
+	}
+
+	public class Some<T> : Maybe<T>
+	{
+		public Some(T value) => Items = new[] { value };
+
+		public override bool HasValue => true;
+
+		public override void Map(Action<T> some)
+		{
+			if (some == null) throw new ArgumentNullException(nameof(some));
+
+			if (Items.Length != 0) some(Items[0]);
+		}
+
+		public override void Map(Action<T> some, Action none)
+		{
+			if (some == null) throw new ArgumentNullException(nameof(some));
+
+			some(Items[0]);
+		}
+
+		public override U Map<U>(Func<T, U> some, Func<U> none)
+		{
+			if (some == null) throw new ArgumentNullException(nameof(some));
+
+			return some(Items[0]);
+		}
+	}
+
+	public class None<T> : Maybe<T>
+	{
+		public None() => Items = new T[0];
+
+		public override bool HasValue => false;
+
+		public override void Map(Action<T> some, Action none)
+		{
+			if (none == null) throw new ArgumentNullException(nameof(none));
+
+			none();
+		}
+
+		public override U Map<U>(Func<T, U> some, Func<U> none)
+		{
+			if (none == null) throw new ArgumentNullException(nameof(none));
+
+			return none();
+		}
 	}
 }
