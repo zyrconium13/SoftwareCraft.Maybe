@@ -28,13 +28,22 @@ namespace SoftwareCraft.Maybe
 
 		public Maybe<U> Bind<U>(Func<T, Maybe<U>> func)
 			=> Map(func, () => new None<U>());
+
+		public static Maybe<T> Some(T value) => new Some<T>(value);
+
+		public static Maybe<T> None() => new None<T>();
 	}
 
-	public class Some<T> : Maybe<T>
+	public sealed class Some<T> : Maybe<T>
 	{
-		public Some(T value) => Items = new[] { value };
+		internal Some(T value) => Items = new[]
+		                                  {
+			                                  value
+		                                  };
 
 		public override bool HasValue => true;
+
+		public T Value => Items[0];
 
 		public override void Map(Action<T> some)
 		{
@@ -58,9 +67,9 @@ namespace SoftwareCraft.Maybe
 		}
 	}
 
-	public class None<T> : Maybe<T>
+	public sealed class None<T> : Maybe<T>
 	{
-		public None() => Items = new T[0];
+		internal None() => Items = new T[0];
 
 		public override bool HasValue => false;
 
