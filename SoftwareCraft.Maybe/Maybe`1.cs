@@ -69,8 +69,6 @@ namespace SoftwareCraft.Maybe
 
 	public sealed class None<T> : Maybe<T>
 	{
-		internal None() => Items = new T[0];
-
 		public override bool HasValue => false;
 
 		public override void Map(Action<T> some, Action none)
