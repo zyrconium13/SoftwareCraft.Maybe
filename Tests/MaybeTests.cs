@@ -166,7 +166,7 @@ namespace Tests
 		[Fact]
 		public void Null_wrapped_method_throws_exception()
 		{
-			Assert.Throws<ArgumentNullException>(() => Maybe<object>.FromResult(null));
+			Assert.Throws<ArgumentNullException>(() => Maybe<object>.Wrap(null));
 		}
 
 		[Fact]
@@ -176,7 +176,7 @@ namespace Tests
 
 			Func<object> func = () => null;
 
-			var actual = Maybe<object>.FromResult(func);
+			var actual = Maybe<object>.Wrap(func);
 
 			Assert.Same(expected, actual.ValueOrDefault(expected));
 		}
@@ -189,7 +189,7 @@ namespace Tests
 
 			Func<object> func = () => expected;
 
-			var actual = Maybe<object>.FromResult(func);
+			var actual = Maybe<object>.Wrap(func);
 
 			Assert.Same(expected, actual.ValueOrDefault(other));
 		}

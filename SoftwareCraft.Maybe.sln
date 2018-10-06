@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareCraft.Maybe", "SoftwareCraft.Maybe\SoftwareCraft.Maybe.csproj", "{82EE070B-8AAB-4380-B63E-B282B0207897}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftwareCraft.Maybe", "SoftwareCraft.Maybe\SoftwareCraft.Maybe.csproj", "{82EE070B-8AAB-4380-B63E-B282B0207897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{8750D538-35F2-47BC-8A6C-52DF7116751D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{8750D538-35F2-47BC-8A6C-52DF7116751D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{AE60A4CB-FABE-46C4-8A59-198D6201E432}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,11 +20,17 @@ Global
 		{82EE070B-8AAB-4380-B63E-B282B0207897}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82EE070B-8AAB-4380-B63E-B282B0207897}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8750D538-35F2-47BC-8A6C-52DF7116751D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8750D538-35F2-47BC-8A6C-52DF7116751D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8750D538-35F2-47BC-8A6C-52DF7116751D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8750D538-35F2-47BC-8A6C-52DF7116751D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE60A4CB-FABE-46C4-8A59-198D6201E432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE60A4CB-FABE-46C4-8A59-198D6201E432}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE60A4CB-FABE-46C4-8A59-198D6201E432}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE60A4CB-FABE-46C4-8A59-198D6201E432}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F2EC6550-3D9F-4447-8C3D-1BB37139C130}
 	EndGlobalSection
 EndGlobal

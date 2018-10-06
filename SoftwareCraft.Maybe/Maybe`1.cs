@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SoftwareCraft.Maybe
 {
@@ -9,10 +8,7 @@ namespace SoftwareCraft.Maybe
 	/// </summary>
 	/// <typeparam name="T">The type of the contained value. Must be a reference type.</typeparam>
 	public class Maybe<T>
-		where T : class
 	{
-		private readonly Action defaultNothingAction = () => { };
-
 		private readonly T[] items;
 
 		/// <summary>
@@ -29,46 +25,7 @@ namespace SoftwareCraft.Maybe
 			                                 value
 		                                 };
 
-		/// <summary>
-		///     Provides a safe way to retrieve the contained value.
-		/// </summary>
-		/// <param name="surrogate">This will be returned if the current instance does not contain a value.</param>
-		public T ValueOrDefault(T surrogate) => items.Length == 0 ?
-			surrogate :
-			items[0];
-
-		/// <summary>
-		///     Provides a safe way to retrieve the contained value, allowing for lazy evaluation of the default value.
-		/// </summary>
-		/// <param name="surrogateFactory">
-		///     The output of this <see cref="Func{TResult}" /> will be returned if the current instance
-		///     does not contain a value.
-		/// </param>
-		public T ValueOrDefault(Func<T> surrogateFactory)
-		{
-			if (surrogateFactory == null) throw new ArgumentNullException(nameof(surrogateFactory));
-
-			return items.Length == 0 ?
-				surrogateFactory() :
-				items[0];
-		}
-
-		/// <summary>
-		///     Provides a safe way to retrieve the contained value, allowing for lazy asynchronous evaluation of the default
-		///     value.
-		/// </summary>
-		/// <param name="surrogateFactory">
-		///     The output of this <see cref="Func{TResult}" /> will be returned if the current instance
-		///     does not contain a value.
-		/// </param>
-		public Task<T> ValueOrDefaultAsync(Func<T> surrogateFactory)
-		{
-			if (surrogateFactory == null) throw new ArgumentNullException(nameof(surrogateFactory));
-
-			return items.Length == 0 ?
-				Task.Run(() => surrogateFactory()) :
-				Task.FromResult(items[0]);
-		}
+		public bool HasValue => items.Length == 1;
 
 		/// <summary>
 		///     Allows specifying actions that will be called if the current instance contains a value or not.
@@ -76,7 +33,9 @@ namespace SoftwareCraft.Maybe
 		/// <param name="some">The action that will be called if the current instance contains a value.</param>
 		public void Map(Action<T> some)
 		{
-			Map(some, defaultNothingAction);
+			if (some == null) throw new ArgumentNullException(nameof(some));
+
+			if (items.Length != 0) some(items[0]);
 		}
 
 		/// <summary>
@@ -112,46 +71,12 @@ namespace SoftwareCraft.Maybe
 		}
 
 		/// <summary>
-		///     Allows specifying actions that will be called if the current instance contains a value or not.
-		///     The delegates will be executed asynchronously.
-		/// </summary>
-		/// <param name="some">The action that will be called if the current instance contains a value.</param>
-		/// <param name="nothing">The action that will be called if the current instance does not contain a value.</param>
-		/// <returns>Returns the value provided by either of the delegate functions.</returns>
-		public Task<U> Map<U>(Func<T, Task<U>> some, Func<Task<U>> nothing)
-		{
-			if (some == null) throw new ArgumentNullException(nameof(some));
-			if (nothing == null) throw new ArgumentNullException(nameof(nothing));
-
-			return items.Length == 0 ?
-				nothing() :
-				some(items[0]);
-		}
-
-		/// <summary>
-		///     Allows specifying actions that will be called if the current instance contains a value or not.
-		///     The delegates will be executed asynchronously.
-		/// </summary>
-		/// <param name="some">The action that will be called if the current instance contains a value.</param>
-		/// <param name="nothing">The action that will be called if the current instance does not contain a value.</param>
-		/// <returns>Returns the value provided by either of the delegate functions.</returns>
-		public Task<U> MapAsync<U>(Func<T, U> some, Func<U> nothing)
-		{
-			if (some == null) throw new ArgumentNullException(nameof(some));
-			if (nothing == null) throw new ArgumentNullException(nameof(nothing));
-
-			return items.Length == 0 ?
-				Task.Run(nothing) :
-				Task.Run(() => some(items[0]));
-		}
-
-		/// <summary>
 		///     Facilitates wrapping an existing method that currently returns a single instance of an object, but may also return
 		///     null.
 		/// </summary>
 		/// <param name="func">The function whose result must be converted to a <see cref="Maybe{T}" />.</param>
 		/// <returns></returns>
-		public static Maybe<T> FromResult(Func<T> func)
+		public static Maybe<T> Wrap(Func<T> func)
 		{
 			if (func == null) throw new ArgumentNullException(nameof(func));
 
@@ -162,37 +87,7 @@ namespace SoftwareCraft.Maybe
 				new Maybe<T>(result);
 		}
 
-		/// <summary>
-		///     Allows specifying actions that will be called if the current instance contains a value or not.
-		///     The delegates will be executed asynchronously.
-		/// </summary>
-		/// <param name="some">The action that will be called if the current instance contains a value.</param>
-		public Task MapAsync(Action<T> some)
-		{
-			return Task.Run(() => Map(some));
-		}
-
-		/// <summary>
-		///     Allows specifying actions that will be called if the current instance contains a value or not.
-		///     The delegates will be executed asynchronously.
-		/// </summary>
-		/// <param name="some">The action that will be called if the current instance contains a value.</param>
-		/// <param name="nothing">The action that will be called if the current instance does not contain a value.</param>
-		public Task MapAsync(Action<object> some, Action nothing)
-		{
-			return Task.Run(() => Map(some, nothing));
-		}
-
-		/// <summary>
-		///     Facilitates wrapping an existing method that currently returns a single instance of an object, but may also return
-		///     null.
-		///     The method will be executed asynchronously.
-		/// </summary>
-		/// <param name="func">The function whose result must be converted to a <see cref="Maybe{T}" />.</param>
-		/// <returns></returns>
-		public static Task<Maybe<T>> FromResultAsync(Func<T> func)
-		{
-			return Task.Run(() => FromResult(func));
-		}
+		public Maybe<U> Bind<U>(Func<T, Maybe<U>> func)
+			=> Map(func, () => new Maybe<U>());
 	}
 }
