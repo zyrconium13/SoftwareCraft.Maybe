@@ -29,6 +29,8 @@ namespace SoftwareCraft.Maybe
 			                                  value
 		                                  };
 
+		public T Value => Items[0];
+
 		public bool Equals(Some<T> other) => Items[0].Equals(other.Items[0]);
 
 		public override void Match(Action<T> some, Action none)
