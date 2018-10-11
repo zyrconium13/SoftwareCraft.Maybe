@@ -9,17 +9,17 @@ namespace Sandbox
 	{
 		private static void Main(string[] args)
 		{
-			var m1 = Maybe.Some(13);
+			var m1 = Maybe.None<int>();
 
 			var m2 = Maybe.Some(Maybe.Some(Maybe.Some(42)));
 
 			var msg1 = m1.Bind(i => Maybe.Some($"Your value is {i}"));
-			  //.Match(Console.WriteLine, () => { });
 
 			var msg = m1.Bind(a => Maybe.Some(a + 10))
-			            .Bind(b => Maybe.Some(b * 2))
+			            .Bind(b => Maybe.Some(b * 2.0))
 			            .Bind(c => Maybe.Some(c - 7))
-			            .Match(r => $"The result is {r}.", () => "No result.");
+			            .Map(r => $"The result is {r:N}.", () => "No result.");
+			Console.WriteLine(msg);
 
 			switch (msg1)
 			{
@@ -29,11 +29,8 @@ namespace Sandbox
 				case Some<string> some:
 					Console.WriteLine(some.Value);
 					break;
-				
 			}
 
-			Console.WriteLine(msg);
-			
 			var e1 = Maybe.Some(42);
 			var e1s = e1.ToString();
 

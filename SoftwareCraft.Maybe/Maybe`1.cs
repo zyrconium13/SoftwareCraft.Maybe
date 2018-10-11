@@ -13,11 +13,9 @@ namespace SoftwareCraft.Maybe
 	{
 		protected T[] Items;
 
-		public abstract void Match(Action<T> some, Action none);
+		public abstract void Map(Action<T> some, Action none);
 
-		public abstract U Match<U>(Func<T, U> some, Func<U> none);
-
-		public abstract Maybe<U> Map<U>(Func<T, U> some);
+		public abstract U Map<U>(Func<T, U> some, Func<U> none);
 
 		public abstract Maybe<U> Bind<U>(Func<T, Maybe<U>> func);
 	}
@@ -33,25 +31,18 @@ namespace SoftwareCraft.Maybe
 
 		public bool Equals(Some<T> other) => Items[0].Equals(other.Items[0]);
 
-		public override void Match(Action<T> some, Action none)
+		public override void Map(Action<T> some, Action none)
 		{
 			if (some == null) throw new ArgumentNullException(nameof(some));
 
 			some(Items[0]);
 		}
 
-		public override U Match<U>(Func<T, U> some, Func<U> none)
+		public override U Map<U>(Func<T, U> some, Func<U> none)
 		{
 			if (some == null) throw new ArgumentNullException(nameof(some));
 
 			return some(Items[0]);
-		}
-
-		public override Maybe<U> Map<U>(Func<T, U> func)
-		{
-			if (func == null) throw new ArgumentNullException(nameof(func));
-
-			return new Some<U>(func(Items[0]));
 		}
 
 		public override Maybe<U> Bind<U>(Func<T, Maybe<U>> func)
@@ -79,25 +70,18 @@ namespace SoftwareCraft.Maybe
 
 		public bool Equals(None<T> other) => true;
 
-		public override void Match(Action<T> some, Action none)
+		public override void Map(Action<T> some, Action none)
 		{
 			if (none == null) throw new ArgumentNullException(nameof(none));
 
 			none();
 		}
 
-		public override U Match<U>(Func<T, U> some, Func<U> none)
+		public override U Map<U>(Func<T, U> some, Func<U> none)
 		{
 			if (none == null) throw new ArgumentNullException(nameof(none));
 
 			return none();
-		}
-
-		public override Maybe<U> Map<U>(Func<T, U> func)
-		{
-			if (func == null) throw new ArgumentNullException(nameof(func));
-
-			return new None<U>();
 		}
 
 		public override Maybe<U> Bind<U>(Func<T, Maybe<U>> func)
