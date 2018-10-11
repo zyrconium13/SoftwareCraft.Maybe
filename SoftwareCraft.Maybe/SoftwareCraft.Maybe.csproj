@@ -21,4 +21,8 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Maybe`1.cs~RF35417be.TMP" />
+  </ItemGroup>
+
 </Project>
