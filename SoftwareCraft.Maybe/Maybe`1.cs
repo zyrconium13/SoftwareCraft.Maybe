@@ -73,6 +73,8 @@ namespace SoftwareCraft.Maybe
 
 	public sealed class None<T> : Maybe<T>, IEquatable<None<T>>
 	{
+		internal None() { }
+
 		public bool Equals(None<T> other) => true;
 
 		public override void Match(Action<T> some, Action none)
