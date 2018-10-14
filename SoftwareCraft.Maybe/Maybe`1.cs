@@ -9,96 +9,153 @@ namespace SoftwareCraft.Maybe
 		public static Maybe<T> None<T>() => new None<T>();
 	}
 
-	public abstract class Maybe<T>
+	public abstract class Maybe<T> : IEquatable<Maybe<T>>
 	{
-		protected T[] Items;
+		protected readonly T[] Items;
 
-		public abstract void Map(Action<T> some, Action none);
+		protected Maybe() => Items = new T[0];
 
-		public abstract U Map<U>(Func<T, U> some, Func<U> none);
+		protected Maybe(T value) => Items = new[]
+		                                    {
+			                                    value
+		                                    };
 
-		public abstract Maybe<U> Bind<U>(Func<T, Maybe<U>> func);
+		public bool Equals(Maybe<T> other)
+		{
+			switch (Items.Length)
+			{
+				case 1 when other.Items.Length == 0: // Some equals None?
+				case 0 when other.Items.Length == 1: // None equals Some?
+					return false;
+				case 0 when other.Items.Length == 0: // None equals None?
+					return true;
+				default:
+					return Items[0].Equals(other.Items[0]); // Some equals Some?
+			}
+		}
+
+		public abstract Maybe<U> Select<U>(Func<T, U> some, Func<U> none);
+
+		public abstract Maybe<U> Select<U>(Func<T, U> some);
+
+		public abstract Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some, Func<Maybe<U>> none);
+
+		public abstract Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some);
+
+		public abstract U Match<U>(Func<T, U> some, Func<U> none);
+
+		public abstract void Match(Action<T> some, Action none);
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != GetType()) return false;
+			return Equals((Maybe<T>) obj);
+		}
+
+		public static bool operator ==(Maybe<T> left, Maybe<T> right) => Equals(left, right);
+
+		public static bool operator !=(Maybe<T> left, Maybe<T> right) => !Equals(left, right);
+
+		public override int GetHashCode()
+			=> Items.Length == 0 ?
+				0 :
+				Items[0].GetHashCode();
 	}
 
-	public sealed class Some<T> : Maybe<T>, IEquatable<Some<T>>
+	public sealed class Some<T> : Maybe<T>
 	{
-		internal Some(T value) => Items = new[]
-		                                  {
-			                                  value
-		                                  };
+		internal Some(T value)
+			: base(value) { }
 
-		public T Value => Items[0];
-
-		public bool Equals(Some<T> other) => Items[0].Equals(other.Items[0]);
-
-		public override void Map(Action<T> some, Action none)
+		public override Maybe<U> Select<U>(Func<T, U> some, Func<U> none)
 		{
 			if (some == null) throw new ArgumentNullException(nameof(some));
 
-			some(Items[0]);
+			return new Some<U>(some(Items[0]));
 		}
 
-		public override U Map<U>(Func<T, U> some, Func<U> none)
+		public override Maybe<U> Select<U>(Func<T, U> some)
+		{
+			if (some == null) throw new ArgumentNullException(nameof(some));
+
+			return new Some<U>(some(Items[0]));
+		}
+
+		public override Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some, Func<Maybe<U>> none)
 		{
 			if (some == null) throw new ArgumentNullException(nameof(some));
 
 			return some(Items[0]);
 		}
 
-		public override Maybe<U> Bind<U>(Func<T, Maybe<U>> func)
+		public override Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some)
 		{
-			if (func == null) throw new ArgumentNullException(nameof(func));
+			if (some == null) throw new ArgumentNullException(nameof(some));
 
-			return func(Items[0]);
+			return some(Items[0]);
 		}
 
-		public override bool Equals(object obj)
+		public override U Match<U>(Func<T, U> some, Func<U> none)
 		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (ReferenceEquals(this, obj)) return true;
-			return obj is Some<T> other && Equals(other);
+			if (some == null) throw new ArgumentNullException(nameof(some));
+
+			return some(Items[0]);
 		}
 
-		public override int GetHashCode() => Items[0].GetHashCode();
+		public override void Match(Action<T> some, Action none)
+		{
+			if (some == null) throw new ArgumentNullException(nameof(some));
+
+			some(Items[0]);
+		}
 
 		public override string ToString() => Items[0].ToString();
 	}
 
-	public sealed class None<T> : Maybe<T>, IEquatable<None<T>>
+	public sealed class None<T> : Maybe<T>
 	{
 		internal None() { }
 
-		public bool Equals(None<T> other) => true;
-
-		public override void Map(Action<T> some, Action none)
+		public override Maybe<U> Select<U>(Func<T, U> some, Func<U> none)
 		{
-			if (none == null) throw new ArgumentNullException(nameof(none));
+			if (some == null) throw new ArgumentNullException(nameof(some));
 
 			none();
+
+			return new None<U>();
 		}
 
-		public override U Map<U>(Func<T, U> some, Func<U> none)
+		public override Maybe<U> Select<U>(Func<T, U> some) => new None<U>();
+
+		public override Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some)
+		{
+			if (some == null) throw new ArgumentNullException(nameof(some));
+
+			return new None<U>();
+		}
+
+		public override Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some, Func<Maybe<U>> none)
 		{
 			if (none == null) throw new ArgumentNullException(nameof(none));
 
 			return none();
 		}
 
-		public override Maybe<U> Bind<U>(Func<T, Maybe<U>> func)
+		public override U Match<U>(Func<T, U> some, Func<U> none)
 		{
-			if (func == null) throw new ArgumentNullException(nameof(func));
+			if (none == null) throw new ArgumentNullException(nameof(none));
 
-			return new None<U>();
+			return none();
 		}
 
-		public override bool Equals(object obj)
+		public override void Match(Action<T> some, Action none)
 		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (ReferenceEquals(this, obj)) return true;
-			return obj is None<T> other && Equals(other);
-		}
+			if (none == null) throw new ArgumentNullException(nameof(none));
 
-		public override int GetHashCode() => 0;
+			none();
+		}
 
 		public override string ToString() => "";
 	}
