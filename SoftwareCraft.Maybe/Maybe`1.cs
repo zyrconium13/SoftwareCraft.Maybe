@@ -114,6 +114,7 @@ namespace SoftwareCraft.Maybe
 		public override Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some, Func<Maybe<U>> none)
 		{
 			if (some == null) throw new ArgumentNullException(nameof(some));
+			if (none == null) throw new ArgumentNullException(nameof(none));
 
 			return some(Items[0]);
 		}
@@ -172,6 +173,7 @@ namespace SoftwareCraft.Maybe
 
 		public override Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some, Func<Maybe<U>> none)
 		{
+			if (some == null) throw new ArgumentNullException(nameof(some));
 			if (none == null) throw new ArgumentNullException(nameof(none));
 
 			return none();

@@ -136,9 +136,10 @@ namespace Tests
 			// Arrange
 			var expectedType = new SampleReferenceType();
 
+			// Act
 			var maybe = Maybe.Some(expectedType);
 
-			// Act & Assert
+			// Act
 			maybe.Match(actualType => Assert.AreSame(expectedType, actualType),
 				() => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
 		}
@@ -146,9 +147,71 @@ namespace Tests
 		[TestMethod]
 		public void MatchOnNoneOnlyCallsDelegate()
 		{
+			// Arrange
 			var maybe = Maybe.None<SampleReferenceType>();
 
+			// Act & Assert
 			maybe.Match(x => Assert.Fail(Resources.Maybe_ShouldNotHaveAValue), () => Assert.IsTrue(true));
+		}
+
+		[TestMethod]
+		public void X()
+		{
+			var maybe = Maybe.Some(new SampleReferenceType());
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<SampleReferenceType>));
+
+			var result = maybe.SelectMany(i => Maybe.None<AnotherReferenceType>());
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<AnotherReferenceType>));
+		}
+
+		[TestMethod]
+		public void W()
+		{
+			var maybe = Maybe.Some(new SampleReferenceType());
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<SampleReferenceType>));
+
+			var result = maybe.SelectMany(i => Maybe.None<AnotherReferenceType>(), () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.Some(new AnotherReferenceType());
+			});
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<AnotherReferenceType>));
+		}
+
+		[TestMethod]
+		public void Y()
+		{
+			var maybe = Maybe.None<SampleReferenceType>();
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<SampleReferenceType>));
+
+			var result = maybe.SelectMany(i =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.None<AnotherReferenceType>();
+			}, () => Maybe.Some(new AnotherReferenceType()));
+
+			Assert.IsTrue(result.IsSome);
+			Assert.IsInstanceOfType(result, typeof(Maybe<AnotherReferenceType>));
+		}
+
+		[TestMethod]
+		public void Z()
+		{
+			var maybe = Maybe.None<SampleReferenceType>();
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<SampleReferenceType>));
+
+			var result = maybe.SelectMany(i =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.Some(new SampleReferenceType());
+			});
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<SampleReferenceType>));
 		}
 
 		[TestMethod]
@@ -188,7 +251,7 @@ namespace Tests
 
 			var none = Maybe.None<SampleReferenceType>();
 
-			Assert.AreEqual("", none.ToString());
+			Assert.AreEqual(string.Empty, none.ToString());
 		}
 
 		[TestMethod]
@@ -261,6 +324,25 @@ namespace Tests
 		}
 
 		[TestMethod]
+		public void ReactToTheExistenceOfAValue_2()
+		{
+			// Arrange
+			var maybe = Maybe.Some(13);
+
+			// Act
+			var expectedValue = 18.0;
+			var result = maybe.Select(x => expectedValue, () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return 0.0;
+			});
+
+			// Assert
+			result.Match(actualValue => Assert.AreEqual(expectedValue, actualValue),
+				() => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
+		}
+
+		[TestMethod]
 		public void DoNotReactToTheLackOfAValue()
 		{
 			// Arrange
@@ -270,7 +352,7 @@ namespace Tests
 			var result = maybe.Select(x =>
 			{
 				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
-				return 13;
+				return 0.0;
 			});
 
 			// Assert
@@ -332,6 +414,96 @@ namespace Tests
 		}
 
 		[TestMethod]
+		public void SelectManyDelegatesCannotBeNull()
+		{
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.Some(13).SelectMany<double>(null));
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.Some(13).SelectMany(null, () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.None<double>();
+			}));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.Some(13).SelectMany(i =>
+				{
+					Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+					return Maybe.None<double>();
+				}, null));
+
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.None<int>().SelectMany<double>(null));
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.None<int>().SelectMany(null, () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.None<double>();
+			}));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.None<int>().SelectMany(i =>
+				{
+					Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+					return Maybe.None<double>();
+				}, null));
+		}
+
+		[TestMethod]
+		public void X()
+		{
+			var maybe = Maybe.Some(13);
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<int>));
+
+			var result = maybe.SelectMany(i => Maybe.None<double>());
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
+		}
+
+		[TestMethod]
+		public void W()
+		{
+			var maybe = Maybe.Some(13);
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<int>));
+
+			var result = maybe.SelectMany(i => Maybe.None<double>(), () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.Some(0.0);
+			});
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
+		}
+
+		[TestMethod]
+		public void Y()
+		{
+			var maybe = Maybe.None<int>();
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<int>));
+
+			var result = maybe.SelectMany(i =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.None<double>();
+			}, () => Maybe.Some(13.0));
+
+			Assert.IsTrue(result.IsSome);
+			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
+		}
+
+		[TestMethod]
+		public void Z()
+		{
+			var maybe = Maybe.None<int>();
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<int>));
+
+			var result = maybe.SelectMany(i =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.Some(13.0);
+			});
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
+		}
+
+		[TestMethod]
 		public void EqualityTests()
 		{
 			var noneA = Maybe.None<int>();
@@ -372,7 +544,7 @@ namespace Tests
 
 			var none = Maybe.None<int>();
 
-			Assert.AreEqual("", none.ToString());
+			Assert.AreEqual(string.Empty, none.ToString());
 		}
 
 		[TestMethod]
