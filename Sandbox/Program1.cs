@@ -5,6 +5,10 @@ using SoftwareCraft.Maybe;
 
 namespace Sandbox
 {
+	internal class Person
+	{
+	}
+
 	internal class Program1
 	{
 		private static void Main(string[] args)
@@ -16,10 +20,10 @@ namespace Sandbox
 			var msg1 = m1.SelectMany(i => Maybe.Some($"Your value is {i}"));
 			var msg11 = m1.Select(i => $"Your value is {i}");
 
-			m1.SelectMany(a => Maybe.Some(a + 10))
-			  .SelectMany(b => Maybe.Some(b * 2.0))
-			  .SelectMany(c => Maybe.Some(c - 7))
-			  .Match(r => Console.WriteLine($"The result is {r:N}."), () => Console.WriteLine("No result."));
+			m1.Select(a => a + 10)
+				.Select(b => b * 2.0)
+				.Select(c => c - 7)
+				.Match(r => Console.WriteLine($"The result is {r:N}."), () => Console.WriteLine("No result."));
 
 			var msg = m1.Select(i => i + 10, () => 0);
 
@@ -27,15 +31,11 @@ namespace Sandbox
 
 			Console.WriteLine(msg);
 
-			//switch (msg1)
-			//{
-			//	case None<string> none:
-			//		Console.WriteLine("No value.");
-			//		break;
-			//	case Some<string> some:
-			//		Console.WriteLine(some.Value);
-			//		break;
-			//}
+			var numbers = new[] {1, 2, 3, 4, 5};
+
+			var maybes1 = numbers.Select(i => new[] {Maybe.Some(i - 1), Maybe.Some(i + 1)});
+
+			var maybe2 = numbers.SelectMany(i => new[] {Maybe.Some(i - 1), Maybe.Some(i + 1)});
 
 			var e1 = Maybe.Some(42);
 			var e1s = e1.ToString();
