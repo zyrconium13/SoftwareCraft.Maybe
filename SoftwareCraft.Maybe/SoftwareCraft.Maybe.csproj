@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>SoftwareCraft</Authors>
     <Company>SoftwareCraft</Company>
@@ -9,20 +9,14 @@
     <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
     <PackageTags>maybe c-sharp functional-programming dotnetcore</PackageTags>
-    <PackageReleaseNotes>Added Map overload that returns a value.</PackageReleaseNotes>
-    <AssemblyVersion>1.0.0.3</AssemblyVersion>
-    <FileVersion>1.0.0.3</FileVersion>
-    <Version>1.0.0.3</Version>
+    <PackageReleaseNotes>A completely new version that is more aligned with the monad concept.</PackageReleaseNotes>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.0.0</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>SoftwareCraftKey.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <RootNamespace>SoftwareCraft.Functional</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Maybe`1.cs~RF35417be.TMP" />
-  </ItemGroup>
 
 </Project>

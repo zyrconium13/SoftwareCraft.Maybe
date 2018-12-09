@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareCraft.Maybe;
+using SoftwareCraft.Functional;
 using Tests.Properties;
 
 namespace Tests
