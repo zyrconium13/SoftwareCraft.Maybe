@@ -14,9 +14,13 @@
     <FileVersion>2.0.0.0</FileVersion>
     <Version>2.0.0.0</Version>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>SoftwareCraftKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>D:\OneDrive\Documents\SoftwareCraftKey\SoftwareCraftKey.snk</AssemblyOriginatorKeyFile>
     <RootNamespace>SoftwareCraft.Functional</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="D:\OneDrive\Documents\SoftwareCraftKey\SoftwareCraftKey.snk" Link="SoftwareCraftKey.snk" />
+  </ItemGroup>
 
 </Project>

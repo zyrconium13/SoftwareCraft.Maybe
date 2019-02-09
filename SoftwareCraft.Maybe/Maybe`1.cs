@@ -7,10 +7,7 @@ namespace SoftwareCraft.Functional
 	{
 		protected readonly T[] Items;
 
-		protected Maybe()
-		{
-			Items = new T[0];
-		}
+		protected Maybe() => Items = new T[0];
 
 		protected Maybe(T value)
 		{
@@ -22,11 +19,10 @@ namespace SoftwareCraft.Functional
 			};
 		}
 
-		public abstract bool IsNone { get; }
-		public abstract bool IsSome { get; }
-
 		public bool Equals(Maybe<T> other)
 		{
+			if (null == other) return false;
+
 			switch (Items.Length)
 			{
 				case 1 when other.Items.Length == 0: // Some equals None?
@@ -57,19 +53,10 @@ namespace SoftwareCraft.Functional
 			return Equals((Maybe<T>) obj);
 		}
 
-		public static bool operator ==(Maybe<T> left, Maybe<T> right)
-		{
-			return Equals(left, right);
-		}
+		public static bool operator ==(Maybe<T> left, Maybe<T> right) => Equals(left, right);
 
-		public static bool operator !=(Maybe<T> left, Maybe<T> right)
-		{
-			return !Equals(left, right);
-		}
+		public static bool operator !=(Maybe<T> left, Maybe<T> right) => !Equals(left, right);
 
-		public override int GetHashCode()
-		{
-			return Items.Length == 0 ? 0 : Items[0].GetHashCode();
-		}
+		public override int GetHashCode() => Items.Length == 0 ? 0 : Items[0].GetHashCode();
 	}
 }
