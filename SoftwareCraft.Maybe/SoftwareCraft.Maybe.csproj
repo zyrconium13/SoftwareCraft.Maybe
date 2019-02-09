@@ -1,19 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>SoftwareCraft</Authors>
+    <Company>SoftwareCraft</Company>
+    <Description>SoftwareCraft.Maybe represents the OOP implementation of a functional concept. Instead of returning null, return a Maybe, and the code will be much cleaner and the intent much clearer.</Description>
+    <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
+    <PackageTags>maybe c-sharp functional-programming dotnetcore</PackageTags>
+    <PackageReleaseNotes>A completely new version that is more aligned with the monad concept.</PackageReleaseNotes>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.0.0</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>SoftwareCraftKey.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0.4</Version>
-    <Authors>SoftwareCraft</Authors>
-    <Description>SoftwareCraft.Maybe represents the OOP implementation of a functional concept. Instead of returning null, return a Maybe, and the code will be much cleaner and the intent much clearer.</Description>
-    <Copyright>SoftwareCraft © 2018</Copyright>
-    <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
-    <PackageTags>maybe c-sharp functional-programming dotnetcore dotnetstandard</PackageTags>
-    <PackageReleaseNotes>Recompiled against .NET Standard.</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
+    <RootNamespace>SoftwareCraft.Functional</RootNamespace>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
 </Project>

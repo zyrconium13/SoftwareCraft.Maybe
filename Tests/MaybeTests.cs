@@ -1,194 +1,572 @@
 using System;
 using System.Linq;
-using SoftwareCraft.Maybe;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SoftwareCraft.Functional;
+using Tests.Properties;
 
 namespace Tests
 {
-	public class MaybeTests
+	[TestClass]
+	public class MaybeReferenceTypesTests
 	{
-		[Fact]
-		public void Empty_maybe_returns_factory_provided_value()
+		[TestMethod]
+		public void NullThrowsException()
 		{
-			var expected = new object();
-
-			var sut = new Maybe<object>();
-
-			object DefaultFactory() => expected;
-
-			var actual = sut.ValueOrDefault(DefaultFactory);
-
-			Assert.Same(expected, actual);
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.Some((SampleReferenceType) null));
 		}
 
-		[Fact]
-		public void Empty_maybe_returns_provided_default()
+		[TestMethod]
+		public void SelectDelegatesCannotBeNull()
 		{
-			var expected = new object();
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.Some(new SampleReferenceType()).Select<double>(null));
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.Some(new SampleReferenceType()).Select(null, () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return 0.0;
+			}));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.Some(new SampleReferenceType()).Select(i =>
+				{
+					Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+					return 0.0;
+				}, null));
 
-			var sut = new Maybe<object>();
-
-			var actual = sut.ValueOrDefault(expected);
-
-			Assert.Same(expected, actual);
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.None<SampleReferenceType>().Select<double>(null));
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.None<SampleReferenceType>().Select(null, () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return 0.0;
+			}));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.None<SampleReferenceType>().Select(i =>
+				{
+					Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+					return 0.0;
+				}, null));
 		}
 
-		[Fact]
-		public void Maybe_returns_contained_value()
+		[TestMethod]
+		public void ReactToTheExistenceOfAValue()
 		{
-			var expected = new object();
-			var another = new object();
+			// Arrange
+			var maybe = Maybe.Some(new SampleReferenceType());
 
-			var sut = new Maybe<object>(expected);
+			// Act
+			var expectedType = new AnotherReferenceType();
+			var result = maybe.Select(x => expectedType);
 
-			var actual = sut.ValueOrDefault(another);
-
-			Assert.Same(expected, actual);
+			// Assert
+			result.Match(actualType => Assert.AreSame(expectedType, actualType),
+				() => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
 		}
 
-		[Fact]
-		public void Null_default_factory_throws_exception()
+		[TestMethod]
+		public void ReactToTheExistenceOfAValue_2()
 		{
-			var sut = new Maybe<object>();
+			// Arrange
+			var maybe = Maybe.Some(new SampleReferenceType());
 
-			Assert.Throws<ArgumentNullException>(() => sut.ValueOrDefault(null));
+			// Act
+			var expectedType = new AnotherReferenceType();
+			var result = maybe.Select(x => expectedType,
+				() =>
+				{
+					Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+					return new AnotherReferenceType();
+				});
+
+			// Assert
+			result.Match(actualType => Assert.AreSame(expectedType, actualType),
+				() => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
+		}
+
+		[TestMethod]
+		public void DoNotReactToTheLackOfAValue()
+		{
+			// Arrange
+			var maybe = Maybe.None<SampleReferenceType>();
+
+			// Act
+			var result = maybe.Select(x =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return new AnotherReferenceType();
+			});
+
+			// Assert
+			Assert.IsTrue(result.IsNone);
+		}
+
+		[TestMethod]
+		public void ReactToTheLackOfAValue()
+		{
+			// Arrange
+			var maybe = Maybe.None<SampleReferenceType>();
+
+			// Act
+			var typeA = new AnotherReferenceType();
+			var typeB = new AnotherReferenceType();
+			var result = maybe.Select(x => typeA, () => typeB);
+
+			// Assert
+			result.Match(type => Assert.AreSame(typeB, type), () => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
+		}
+
+		[TestMethod]
+		public void MatchDelegatesCannotBeNull()
+		{
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.Some(new SampleReferenceType())
+					.Match(null, () => Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled)));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.Some(new SampleReferenceType())
+					.Match(i => Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled), null));
+
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.None<SampleReferenceType>()
+					.Match(null, () => Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled)));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.None<SampleReferenceType>().Match(i => Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled), null));
+		}
+
+		[TestMethod]
+		public void MatchOnSomePassesContainedValue()
+		{
+			// Arrange
+			var expectedType = new SampleReferenceType();
+
+			// Act
+			var maybe = Maybe.Some(expectedType);
+
+			// Act
+			maybe.Match(actualType => Assert.AreSame(expectedType, actualType),
+				() => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
+		}
+
+		[TestMethod]
+		public void MatchOnNoneOnlyCallsDelegate()
+		{
+			// Arrange
+			var maybe = Maybe.None<SampleReferenceType>();
+
+			// Act & Assert
+			maybe.Match(x => Assert.Fail(Resources.Maybe_ShouldNotHaveAValue), () => Assert.IsTrue(true));
+		}
+
+		[TestMethod]
+		public void X()
+		{
+			var maybe = Maybe.Some(new SampleReferenceType());
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<SampleReferenceType>));
+
+			var result = maybe.SelectMany(i => Maybe.None<AnotherReferenceType>());
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<AnotherReferenceType>));
+		}
+
+		[TestMethod]
+		public void W()
+		{
+			var maybe = Maybe.Some(new SampleReferenceType());
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<SampleReferenceType>));
+
+			var result = maybe.SelectMany(i => Maybe.None<AnotherReferenceType>(), () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.Some(new AnotherReferenceType());
+			});
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<AnotherReferenceType>));
+		}
+
+		[TestMethod]
+		public void Y()
+		{
+			var maybe = Maybe.None<SampleReferenceType>();
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<SampleReferenceType>));
+
+			var result = maybe.SelectMany(i =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.None<AnotherReferenceType>();
+			}, () => Maybe.Some(new AnotherReferenceType()));
+
+			Assert.IsTrue(result.IsSome);
+			Assert.IsInstanceOfType(result, typeof(Maybe<AnotherReferenceType>));
+		}
+
+		[TestMethod]
+		public void Z()
+		{
+			var maybe = Maybe.None<SampleReferenceType>();
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<SampleReferenceType>));
+
+			var result = maybe.SelectMany(i =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.Some(new SampleReferenceType());
+			});
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<SampleReferenceType>));
+		}
+
+		[TestMethod]
+		public void EqualityTests()
+		{
+			var noneA = Maybe.None<SampleReferenceType>();
+			var noneB = Maybe.None<SampleReferenceType>();
+			var someA = Maybe.Some(new SampleReferenceType());
+			var someB = Maybe.Some(new SampleReferenceType());
+			var someC = Maybe.Some(new AnotherReferenceType());
+
+			Assert.AreEqual(noneA, noneB);
+			Assert.AreNotEqual(noneA, someA);
+			Assert.AreNotEqual(someA, noneA);
+			Assert.AreNotEqual(someA, someC);
+			Assert.AreNotEqual(someB, someC);
+			Assert.AreNotSame(null, someA);
+			Assert.AreNotSame(null, noneA);
+			Assert.AreNotSame(someA, someB);
+			Assert.AreSame(someA, someA);
+			Assert.AreSame(noneA, noneA);
+
+			Assert.IsFalse(someA == null);
+			Assert.IsFalse(noneA == null);
+
+			Assert.AreNotEqual(someA.GetHashCode(), someB.GetHashCode());
+			Assert.AreNotEqual(someA.GetHashCode(), someC.GetHashCode());
+			Assert.AreEqual(noneA.GetHashCode(), noneB.GetHashCode());
+		}
+
+		[TestMethod]
+		public void StringRepresentation()
+		{
+			var some = Maybe.Some(new SampleReferenceType());
+
+			Assert.AreEqual(typeof(SampleReferenceType).FullName, some.ToString());
+
+			var none = Maybe.None<SampleReferenceType>();
+
+			Assert.AreEqual(string.Empty, none.ToString());
+		}
+
+		[TestMethod]
+		public void Helpers()
+		{
+			var some = Maybe.Some(new SampleReferenceType());
+
+			Assert.IsTrue(some.IsSome);
+			Assert.IsFalse(some.IsNone);
+
+			var none = Maybe.None<SampleReferenceType>();
+
+			Assert.IsFalse(none.IsSome);
+			Assert.IsTrue(none.IsNone);
 		}
 	}
 
-	public class MaybeMapTests
+	[TestClass]
+	public class MaybeValueTypesTests
 	{
-		[Fact]
-		public void Maybe_calls_NOTHING_callback()
+		[TestMethod]
+		public void NullThrowsException()
 		{
-			var sut = new Maybe<object>();
-
-			var someCallbackCalled = false;
-			var nothingCallbackCalled = false;
-
-			sut.Map(i => someCallbackCalled = true, () => nothingCallbackCalled = true);
-
-			Assert.False(someCallbackCalled);
-			Assert.True(nothingCallbackCalled);
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.Some<int?>(null));
 		}
 
-		[Fact]
-		public void Maybe_calls_SOME_callback()
+		[TestMethod]
+		public void SelectDelegatesCannotBeNull()
 		{
-			var sut = new Maybe<object>(new object());
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.Some(13).Select<double>(null));
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.Some(13).Select(null, () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return 0.0;
+			}));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.Some(13).Select(i =>
+				{
+					Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+					return 0.0;
+				}, null));
 
-			var someCallbackCalled = false;
-
-			sut.Map(i => someCallbackCalled = true);
-
-			Assert.True(someCallbackCalled);
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.None<int>().Select<double>(null));
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.None<int>().Select(null, () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return 0.0;
+			}));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.None<int>().Select(i =>
+				{
+					Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+					return 0.0;
+				}, null));
 		}
 
-		[Fact]
-		public void Maybe_calls_SOME_callback_overload()
+		[TestMethod]
+		public void ReactToTheExistenceOfAValue()
 		{
-			var sut = new Maybe<object>(new object());
+			// Arrange
+			var maybe = Maybe.Some(13);
 
-			var someCallbackCalled = false;
-			var nothingCallbackCalled = false;
+			// Act
+			var expectedValue = 18.0;
+			var result = maybe.Select(x => expectedValue);
 
-			sut.Map(i => someCallbackCalled = true, () => nothingCallbackCalled = true);
-
-			Assert.True(someCallbackCalled);
-			Assert.False(nothingCallbackCalled);
+			// Assert
+			result.Match(actualValue => Assert.AreEqual(expectedValue, actualValue),
+				() => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
 		}
 
-		[Fact]
-		public void Null_NOTHING_callback_throws_exception()
+		[TestMethod]
+		public void ReactToTheExistenceOfAValue_2()
 		{
-			var sut = new Maybe<object>(new object());
+			// Arrange
+			var maybe = Maybe.Some(13);
 
-			Assert.Throws<ArgumentNullException>(() => sut.Map(i => { }, null));
+			// Act
+			var expectedValue = 18.0;
+			var result = maybe.Select(x => expectedValue, () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return 0.0;
+			});
+
+			// Assert
+			result.Match(actualValue => Assert.AreEqual(expectedValue, actualValue),
+				() => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
 		}
 
-		[Fact]
-		public void Null_SOME_callback_throws_exception()
+		[TestMethod]
+		public void DoNotReactToTheLackOfAValue()
 		{
-			var sut = new Maybe<object>(new object());
+			// Arrange
+			var maybe = Maybe.None<int>();
 
-			Assert.Throws<ArgumentNullException>(() => sut.Map(null));
-			Assert.Throws<ArgumentNullException>(() => sut.Map(null, () => { }));
+			// Act
+			var result = maybe.Select(x =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return 0.0;
+			});
+
+			// Assert
+			Assert.IsTrue(result.IsNone);
+		}
+
+		[TestMethod]
+		public void ReactToTheLackOfAValue()
+		{
+			// Arrange
+			var maybe = Maybe.None<int>();
+
+			// Act
+			var result = maybe.Select(x =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return 13;
+			}, () => 14);
+
+			// Assert
+			result.Match(i => Assert.AreEqual(14, i), () => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
+		}
+
+		[TestMethod]
+		public void MatchDelegatesCannotBeNull()
+		{
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.Some(13).Match(null, () => Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled)));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.Some(13).Match(i => Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled), null));
+
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.None<int>().Match(null, () => Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled)));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.None<int>().Match(i => Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled), null));
+		}
+
+		[TestMethod]
+		public void MatchOnSomePassesContainedValue()
+		{
+			// Arrange
+			var expectedValue = 13;
+
+			var maybe = Maybe.Some(expectedValue);
+
+			// Act & Assert
+			maybe.Match(actualValue => Assert.AreEqual(expectedValue, actualValue),
+				() => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
+		}
+
+		[TestMethod]
+		public void MatchOnNoneOnlyCallsDelegate()
+		{
+			// Arrange
+			var maybe = Maybe.None<int>();
+
+			// Act & Assert
+			maybe.Match(x => Assert.Fail(Resources.Maybe_ShouldNotHaveAValue), () => Assert.IsTrue(true));
+		}
+
+		[TestMethod]
+		public void SelectManyDelegatesCannotBeNull()
+		{
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.Some(13).SelectMany<double>(null));
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.Some(13).SelectMany(null, () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.None<double>();
+			}));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.Some(13).SelectMany(i =>
+				{
+					Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+					return Maybe.None<double>();
+				}, null));
+
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.None<int>().SelectMany<double>(null));
+			Assert.ThrowsException<ArgumentNullException>(() => Maybe.None<int>().SelectMany(null, () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.None<double>();
+			}));
+			Assert.ThrowsException<ArgumentNullException>(() =>
+				Maybe.None<int>().SelectMany(i =>
+				{
+					Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+					return Maybe.None<double>();
+				}, null));
+		}
+
+		[TestMethod]
+		public void X()
+		{
+			var maybe = Maybe.Some(13);
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<int>));
+
+			var result = maybe.SelectMany(i => Maybe.None<double>());
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
+		}
+
+		[TestMethod]
+		public void W()
+		{
+			var maybe = Maybe.Some(13);
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<int>));
+
+			var result = maybe.SelectMany(i => Maybe.None<double>(), () =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.Some(0.0);
+			});
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
+		}
+
+		[TestMethod]
+		public void Y()
+		{
+			var maybe = Maybe.None<int>();
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<int>));
+
+			var result = maybe.SelectMany(i =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.None<double>();
+			}, () => Maybe.Some(13.0));
+
+			Assert.IsTrue(result.IsSome);
+			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
+		}
+
+		[TestMethod]
+		public void Z()
+		{
+			var maybe = Maybe.None<int>();
+			Assert.IsInstanceOfType(maybe, typeof(Maybe<int>));
+
+			var result = maybe.SelectMany(i =>
+			{
+				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
+				return Maybe.Some(13.0);
+			});
+
+			Assert.IsTrue(result.IsNone);
+			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
+		}
+
+		[TestMethod]
+		public void EqualityTests()
+		{
+			var noneA = Maybe.None<int>();
+			var noneB = Maybe.None<int>();
+			var someA = Maybe.Some(13);
+			var someB = Maybe.Some(13);
+			var someC = Maybe.Some(14);
+
+			Assert.AreEqual(noneA, noneB);
+			Assert.AreNotEqual(noneA, someA);
+			Assert.AreNotEqual(someA, noneA);
+			Assert.AreEqual(someA, someB);
+			Assert.AreNotEqual(someA, someC);
+			Assert.AreNotEqual(someB, someC);
+			Assert.AreNotSame(null, someA);
+			Assert.AreNotSame(null, noneA);
+			Assert.AreNotSame(someA, someB);
+			Assert.AreSame(someA, someA);
+			Assert.AreSame(noneA, noneA);
+
+			Assert.IsTrue(someA == someB);
+			Assert.IsTrue(someA != someC);
+
+			Assert.IsFalse(someA == null);
+			Assert.IsFalse(noneA == null);
+
+			Assert.AreEqual(someA.GetHashCode(), someB.GetHashCode());
+			Assert.AreNotEqual(someA.GetHashCode(), someC.GetHashCode());
+			Assert.AreEqual(noneA.GetHashCode(), noneB.GetHashCode());
+		}
+
+		[TestMethod]
+		public void StringRepresentation()
+		{
+			var some = Maybe.Some(13);
+
+			Assert.AreEqual("13", some.ToString());
+
+			var none = Maybe.None<int>();
+
+			Assert.AreEqual(string.Empty, none.ToString());
+		}
+
+		[TestMethod]
+		public void Helpers()
+		{
+			var some = Maybe.Some(13);
+
+			Assert.IsTrue(some.IsSome);
+			Assert.IsFalse(some.IsNone);
+
+			var none = Maybe.None<int>();
+
+			Assert.IsFalse(none.IsSome);
+			Assert.IsTrue(none.IsNone);
 		}
 	}
 
-	public class MaybeReturnMapTests
+	internal class SampleReferenceType
 	{
-		[Fact]
-		public void NOTHING_returns_result()
-		{
-			var expectedObject = new object();
-
-			var sut = new Maybe<object>();
-
-			var actualObject = sut.Map(x => null, () => expectedObject);
-
-			Assert.Equal(expectedObject, actualObject);
-		}
-
-		[Fact]
-		public void Null_NOTHING_callback_throws_exception()
-		{
-			var sut = new Maybe<object>(new object());
-
-			Assert.Throws<ArgumentNullException>(() => sut.Map(x => new object(), null));
-		}
-
-		[Fact]
-		public void Null_SOME_callback_throws_exception()
-		{
-			var sut = new Maybe<object>(new object());
-
-			Assert.Throws<ArgumentNullException>(() => sut.Map(null, () => new object()));
-		}
-
-		[Fact]
-		public void SOME_returns_result()
-		{
-			var expectedObject = new object();
-
-			var sut = new Maybe<object>(expectedObject);
-
-			var actualObject = sut.Map(x => x, () => null);
-
-			Assert.Equal(expectedObject, actualObject);
-		}
 	}
 
-	public class MaybeFromResultTests
+	internal class AnotherReferenceType
 	{
-		[Fact]
-		public void Null_wrapped_method_throws_exception()
-		{
-			Assert.Throws<ArgumentNullException>(() => Maybe<object>.FromResult(null));
-		}
-
-		[Fact]
-		public void Wrap_method_null_output_into_maybe()
-		{
-			var expected = new object();
-
-			object Func() => null;
-
-			var actual = Maybe<object>.FromResult(Func);
-
-			Assert.Same(expected, actual.ValueOrDefault(expected));
-		}
-
-		[Fact]
-		public void Wrap_method_output_into_maybe()
-		{
-			var expected = new object();
-			var other = new object();
-
-			object Func() => expected;
-
-			var actual = Maybe<object>.FromResult(Func);
-
-			Assert.Same(expected, actual.ValueOrDefault(other));
-		}
 	}
 }
