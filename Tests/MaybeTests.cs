@@ -82,23 +82,6 @@ namespace Tests
 		}
 
 		[TestMethod]
-		public void DoNotReactToTheLackOfAValue()
-		{
-			// Arrange
-			var maybe = Maybe.None<SampleReferenceType>();
-
-			// Act
-			var result = maybe.Select(x =>
-			{
-				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
-				return new AnotherReferenceType();
-			});
-
-			// Assert
-			Assert.IsTrue(result.IsNone);
-		}
-
-		[TestMethod]
 		public void ReactToTheLackOfAValue()
 		{
 			// Arrange
@@ -162,7 +145,6 @@ namespace Tests
 
 			var result = maybe.SelectMany(i => Maybe.None<AnotherReferenceType>());
 
-			Assert.IsTrue(result.IsNone);
 			Assert.IsInstanceOfType(result, typeof(Maybe<AnotherReferenceType>));
 		}
 
@@ -178,7 +160,6 @@ namespace Tests
 				return Maybe.Some(new AnotherReferenceType());
 			});
 
-			Assert.IsTrue(result.IsNone);
 			Assert.IsInstanceOfType(result, typeof(Maybe<AnotherReferenceType>));
 		}
 
@@ -194,7 +175,6 @@ namespace Tests
 				return Maybe.None<AnotherReferenceType>();
 			}, () => Maybe.Some(new AnotherReferenceType()));
 
-			Assert.IsTrue(result.IsSome);
 			Assert.IsInstanceOfType(result, typeof(Maybe<AnotherReferenceType>));
 		}
 
@@ -210,7 +190,6 @@ namespace Tests
 				return Maybe.Some(new SampleReferenceType());
 			});
 
-			Assert.IsTrue(result.IsNone);
 			Assert.IsInstanceOfType(result, typeof(Maybe<SampleReferenceType>));
 		}
 
@@ -252,20 +231,6 @@ namespace Tests
 			var none = Maybe.None<SampleReferenceType>();
 
 			Assert.AreEqual(string.Empty, none.ToString());
-		}
-
-		[TestMethod]
-		public void Helpers()
-		{
-			var some = Maybe.Some(new SampleReferenceType());
-
-			Assert.IsTrue(some.IsSome);
-			Assert.IsFalse(some.IsNone);
-
-			var none = Maybe.None<SampleReferenceType>();
-
-			Assert.IsFalse(none.IsSome);
-			Assert.IsTrue(none.IsNone);
 		}
 	}
 
@@ -340,23 +305,6 @@ namespace Tests
 			// Assert
 			result.Match(actualValue => Assert.AreEqual(expectedValue, actualValue),
 				() => Assert.Fail(Resources.Maybe_ShouldHaveAValue));
-		}
-
-		[TestMethod]
-		public void DoNotReactToTheLackOfAValue()
-		{
-			// Arrange
-			var maybe = Maybe.None<int>();
-
-			// Act
-			var result = maybe.Select(x =>
-			{
-				Assert.Fail(Resources.Maybe_ThisShouldNotBeCalled);
-				return 0.0;
-			});
-
-			// Assert
-			Assert.IsTrue(result.IsNone);
 		}
 
 		[TestMethod]
@@ -451,7 +399,6 @@ namespace Tests
 
 			var result = maybe.SelectMany(i => Maybe.None<double>());
 
-			Assert.IsTrue(result.IsNone);
 			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
 		}
 
@@ -467,7 +414,6 @@ namespace Tests
 				return Maybe.Some(0.0);
 			});
 
-			Assert.IsTrue(result.IsNone);
 			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
 		}
 
@@ -483,7 +429,6 @@ namespace Tests
 				return Maybe.None<double>();
 			}, () => Maybe.Some(13.0));
 
-			Assert.IsTrue(result.IsSome);
 			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
 		}
 
@@ -499,7 +444,6 @@ namespace Tests
 				return Maybe.Some(13.0);
 			});
 
-			Assert.IsTrue(result.IsNone);
 			Assert.IsInstanceOfType(result, typeof(Maybe<double>));
 		}
 
@@ -546,27 +490,9 @@ namespace Tests
 
 			Assert.AreEqual(string.Empty, none.ToString());
 		}
-
-		[TestMethod]
-		public void Helpers()
-		{
-			var some = Maybe.Some(13);
-
-			Assert.IsTrue(some.IsSome);
-			Assert.IsFalse(some.IsNone);
-
-			var none = Maybe.None<int>();
-
-			Assert.IsFalse(none.IsSome);
-			Assert.IsTrue(none.IsNone);
-		}
 	}
 
-	internal class SampleReferenceType
-	{
-	}
+	internal class SampleReferenceType { }
 
-	internal class AnotherReferenceType
-	{
-	}
+	internal class AnotherReferenceType { }
 }

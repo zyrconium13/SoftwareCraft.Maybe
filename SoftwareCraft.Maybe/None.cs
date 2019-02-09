@@ -5,12 +5,7 @@ namespace SoftwareCraft.Functional
 {
 	public sealed class None<T> : Maybe<T>
 	{
-		internal None()
-		{
-		}
-
-		public override bool IsNone => true;
-		public override bool IsSome => false;
+		internal None() { }
 
 		public override Maybe<U> Select<U>(Func<T, U> some, Func<U> none)
 		{
@@ -50,9 +45,6 @@ namespace SoftwareCraft.Functional
 			none();
 		}
 
-		public override string ToString()
-		{
-			return "";
-		}
+		public override string ToString() => "";
 	}
 }
