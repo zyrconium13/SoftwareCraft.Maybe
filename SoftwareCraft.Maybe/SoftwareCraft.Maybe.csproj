@@ -16,6 +16,11 @@
     <SignAssembly>true</SignAssembly>
     <RootNamespace>SoftwareCraft.Functional</RootNamespace>
     <LangVersion>latest</LangVersion>
+    <AssemblyOriginatorKeyFile>D:\OneDrive\Documents\SoftwareCraftKey\SoftwareCraftKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="D:\OneDrive\Documents\SoftwareCraftKey\SoftwareCraftKey.snk" Link="SoftwareCraftKey.snk" />
+  </ItemGroup>
 
 </Project>

@@ -45,6 +45,8 @@ namespace SoftwareCraft.Functional
 
 		public abstract void Match(Action<T> some, Action none);
 
+		public abstract TOut Match<TOut>(Func<T, TOut> some, Func<TOut> none);
+
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(null, obj)) return false;

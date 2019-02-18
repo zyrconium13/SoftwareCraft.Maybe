@@ -45,6 +45,8 @@ namespace SoftwareCraft.Functional
 			none();
 		}
 
+		public override TOut Match<TOut>(Func<T, TOut> some, Func<TOut> none) => none();
+
 		public override string ToString() => "";
 	}
 }
