@@ -52,7 +52,7 @@ namespace SoftwareCraft.Functional
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
 			if (obj.GetType() != GetType()) return false;
-			return Equals((Maybe<T>) obj);
+			return Equals((Maybe<T>)obj);
 		}
 
 		public static bool operator ==(Maybe<T> left, Maybe<T> right) => Equals(left, right);
