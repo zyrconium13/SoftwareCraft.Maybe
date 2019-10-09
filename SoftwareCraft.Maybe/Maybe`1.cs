@@ -61,4 +61,13 @@ namespace SoftwareCraft.Functional
 
 		public override int GetHashCode() => Items.Length == 0 ? 0 : Items[0].GetHashCode();
 	}
+
+	public static class MaybeExtensions
+	{
+		public static Maybe<U> Apply<T, U>(this Maybe<Func<T, U>> m, Maybe<T> other)
+			=> m.Match(f => other.Match(o => Maybe.Some(f(o)), Maybe.None<U>), Maybe.None<U>);
+
+		public static Maybe<U> Apply<T, U>(this Maybe<Func<T, U>> m, T other)
+			=> m.Match(f => Maybe.Some(f(other)), Maybe.None<U>);
+	}
 }
