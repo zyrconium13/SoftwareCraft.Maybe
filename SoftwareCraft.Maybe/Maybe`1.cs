@@ -7,7 +7,7 @@ namespace SoftwareCraft.Functional
 	{
 		protected readonly T[] Items;
 
-		protected Maybe() => Items = new T[0];
+		protected Maybe() => Items = Array.Empty<T>();
 
 		protected Maybe(T value)
 		{
@@ -49,10 +49,9 @@ namespace SoftwareCraft.Functional
 
 		public override bool Equals(object obj)
 		{
-			if (ReferenceEquals(null, obj)) return false;
+			if (obj is null) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != GetType()) return false;
-			return Equals((Maybe<T>) obj);
+			return obj.GetType() == GetType() && Equals((Maybe<T>) obj);
 		}
 
 		public static bool operator ==(Maybe<T> left, Maybe<T> right) => Equals(left, right);
@@ -60,5 +59,11 @@ namespace SoftwareCraft.Functional
 		public static bool operator !=(Maybe<T> left, Maybe<T> right) => !Equals(left, right);
 
 		public override int GetHashCode() => Items.Length == 0 ? 0 : Items[0].GetHashCode();
+	}
+
+	public static class MaybeExtensions
+	{
+		public static Maybe<U> Apply<T, U>(this Maybe<Func<T, U>> m, Maybe<T> other)
+			=> m.Match(f => other.Match(o => Maybe.Some(f(o)), Maybe.None<U>), Maybe.None<U>);
 	}
 }
