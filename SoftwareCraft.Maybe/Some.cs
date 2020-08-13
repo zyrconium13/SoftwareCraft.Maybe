@@ -1,12 +1,17 @@
 ﻿using System;
-using System.Linq;
 
 namespace SoftwareCraft.Functional
 {
 	public sealed class Some<T> : Maybe<T>
 	{
 		internal Some(T value)
-			: base(value) { }
+			: base(value)
+		{
+		}
+
+		public override bool IsSome => true;
+
+		public override bool IsNone => false;
 
 		public override Maybe<U> Select<U>(Func<T, U> some, Func<U> none)
 		{
@@ -46,8 +51,14 @@ namespace SoftwareCraft.Functional
 			some(Items[0]);
 		}
 
-		public override TOut Match<TOut>(Func<T, TOut> some, Func<TOut> none) => some(Items[0]);
+		public override TOut Match<TOut>(Func<T, TOut> some, Func<TOut> none)
+		{
+			return some(Items[0]);
+		}
 
-		public override string ToString() => Items[0].ToString();
+		public override string ToString()
+		{
+			return Items[0].ToString();
+		}
 	}
 }

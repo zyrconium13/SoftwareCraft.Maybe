@@ -1,11 +1,16 @@
 ﻿using System;
-using System.Linq;
 
 namespace SoftwareCraft.Functional
 {
 	public sealed class None<T> : Maybe<T>
 	{
-		internal None() { }
+		internal None()
+		{
+		}
+
+		public override bool IsSome => false;
+
+		public override bool IsNone => true;
 
 		public override Maybe<U> Select<U>(Func<T, U> some, Func<U> none)
 		{
@@ -45,8 +50,14 @@ namespace SoftwareCraft.Functional
 			none();
 		}
 
-		public override TOut Match<TOut>(Func<T, TOut> some, Func<TOut> none) => none();
+		public override TOut Match<TOut>(Func<T, TOut> some, Func<TOut> none)
+		{
+			return none();
+		}
 
-		public override string ToString() => "";
+		public override string ToString()
+		{
+			return "";
+		}
 	}
 }

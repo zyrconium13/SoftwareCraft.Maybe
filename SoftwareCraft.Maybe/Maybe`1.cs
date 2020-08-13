@@ -35,6 +35,10 @@ namespace SoftwareCraft.Functional
 			}
 		}
 
+		public abstract bool IsSome { get; }
+
+		public abstract bool IsNone { get; }
+
 		public abstract Maybe<U> Select<U>(Func<T, U> some, Func<U> none);
 
 		public abstract Maybe<U> Select<U>(Func<T, U> some);

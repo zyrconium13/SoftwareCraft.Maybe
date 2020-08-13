@@ -9,10 +9,10 @@
     <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
     <PackageTags>maybe c-sharp functional-programming dotnet core standard</PackageTags>
-    <PackageReleaseNotes>Compiled for .NET Standard 2.1.</PackageReleaseNotes>
-    <AssemblyVersion>2.0.0.3</AssemblyVersion>
-    <FileVersion>2.0.0.3</FileVersion>
-    <Version>2.0.0.3</Version>
+    <PackageReleaseNotes>Added helper methods for IsSome and IsNone.</PackageReleaseNotes>
+    <AssemblyVersion>2.0.0.4</AssemblyVersion>
+    <FileVersion>2.0.0.4</FileVersion>
+    <Version>2.0.0.4</Version>
     <SignAssembly>true</SignAssembly>
     <RootNamespace>SoftwareCraft.Functional</RootNamespace>
     <LangVersion>latest</LangVersion>
