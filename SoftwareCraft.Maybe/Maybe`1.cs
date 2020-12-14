@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SoftwareCraft.Functional
 {
@@ -54,9 +55,17 @@ namespace SoftwareCraft.Functional
 
         public abstract Maybe<U> Select<U>(Func<T, U> some);
 
+        public abstract Task<Maybe<U>> SelectAsync<U>(Func<T, Task<U>> some, Func<Task<U>> none);
+        
+        public abstract Task<Maybe<U>> SelectAsync<U>(Func<T, Task<U>> some);
+
         public abstract Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some, Func<Maybe<U>> none);
 
         public abstract Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some);
+
+        public abstract Task<Maybe<U>> SelectManyAsync<U>(Func<T, Task<Maybe<U>>> some, Func<Task<Maybe<U>>> none);
+
+        public abstract Task<Maybe<U>> SelectManyAsync<U>(Func<T, Task<Maybe<U>>> some);
 
         public abstract void Match(Action<T> some, Action none);
 
@@ -122,7 +131,8 @@ namespace SoftwareCraft.Functional
             return Maybe.None<Tuple<T1, T2, T3, T4>>();
         }
 
-        public static Maybe<Tuple<T1, T2, T3, T4, T5>> Lift<T1, T2, T3, T4, T5>(Maybe<T1> m1, Maybe<T2> m2, Maybe<T3> m3,
+        public static Maybe<Tuple<T1, T2, T3, T4, T5>> Lift<T1, T2, T3, T4, T5>(Maybe<T1> m1, Maybe<T2> m2,
+            Maybe<T3> m3,
             Maybe<T4> m4, Maybe<T5> m5)
         {
             if (m1.IsSome && m2.IsSome && m3.IsSome && m4.IsSome && m5.IsSome)
