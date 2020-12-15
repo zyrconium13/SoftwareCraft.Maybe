@@ -25,15 +25,7 @@ namespace SoftwareCraft.Functional
 
         public abstract bool IsNone { get; }
 
-        internal T Value
-        {
-            get
-            {
-                if (IsSome) return Items[0];
-
-                throw new InvalidOperationException("Trying to call Value on a None.");
-            }
-        }
+        internal abstract T Value { get; }
 
         public bool Equals(Maybe<T> other)
         {

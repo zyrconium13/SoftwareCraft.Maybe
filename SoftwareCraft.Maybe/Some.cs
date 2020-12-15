@@ -16,6 +16,8 @@ namespace SoftwareCraft.Functional
 
         public override bool IsNone => false;
 
+        internal override T Value => Items[0];
+
         public override Maybe<TU> Select<TU>(Func<T, TU> some, Func<TU> none)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));

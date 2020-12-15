@@ -14,6 +14,7 @@ namespace SoftwareCraft.Functional
         public override bool IsSome => false;
 
         public override bool IsNone => true;
+        internal override T Value => throw new InvalidOperationException("Trying to call Value on a None.");
 
         public override Maybe<TU> Select<TU>(Func<T, TU> some, Func<TU> none)
         {
