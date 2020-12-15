@@ -9,10 +9,10 @@
     <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
     <PackageTags>maybe c-sharp functional-programming dotnet core standard</PackageTags>
-    <PackageReleaseNotes>Added extension methods to execute code only when all maybes are Some.</PackageReleaseNotes>
-    <AssemblyVersion>2.0.1.0</AssemblyVersion>
-    <FileVersion>2.0.1.0</FileVersion>
-    <Version>2.0.1.0</Version>
+    <PackageReleaseNotes>Added LiftLazy and LiftLazyAsync.</PackageReleaseNotes>
+    <AssemblyVersion>2.0.1.2</AssemblyVersion>
+    <FileVersion>2.0.1.2</FileVersion>
+    <Version>2.0.1.2</Version>
     <SignAssembly>true</SignAssembly>
     <RootNamespace>SoftwareCraft.Functional</RootNamespace>
     <LangVersion>latest</LangVersion>

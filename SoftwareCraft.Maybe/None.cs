@@ -15,39 +15,39 @@ namespace SoftwareCraft.Functional
 
         public override bool IsNone => true;
 
-        public override Maybe<U> Select<U>(Func<T, U> some, Func<U> none)
+        public override Maybe<TU> Select<TU>(Func<T, TU> some, Func<TU> none)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (none == null) throw new ArgumentNullException(nameof(none));
 
-            return new Some<U>(none());
+            return new Some<TU>(none());
         }
 
-        public override Maybe<U> Select<U>(Func<T, U> some)
+        public override Maybe<TU> Select<TU>(Func<T, TU> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
 
-            return new None<U>();
+            return new None<TU>();
         }
 
-        public override async Task<Maybe<U>> SelectAsync<U>(Func<T, Task<U>> some, Func<Task<U>> none)
+        public override async Task<Maybe<TU>> SelectAsync<TU>(Func<T, Task<TU>> some, Func<Task<TU>> none)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (none == null) throw new ArgumentNullException(nameof(none));
 
             var value = await none();
 
-            return new Some<U>(value);
+            return new Some<TU>(value);
         }
 
-        public override Task<Maybe<U>> SelectAsync<U>(Func<T, Task<U>> some)
+        public override Task<Maybe<TU>> SelectAsync<TU>(Func<T, Task<TU>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
 
-            return Task.FromResult((Maybe<U>) new None<U>());
+            return Task.FromResult((Maybe<TU>) new None<TU>());
         }
 
-        public override Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some, Func<Maybe<U>> none)
+        public override Maybe<TU> SelectMany<TU>(Func<T, Maybe<TU>> some, Func<Maybe<TU>> none)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (none == null) throw new ArgumentNullException(nameof(none));
@@ -55,26 +55,26 @@ namespace SoftwareCraft.Functional
             return none();
         }
 
-        public override Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some)
+        public override Maybe<TU> SelectMany<TU>(Func<T, Maybe<TU>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
 
-            return new None<U>();
+            return new None<TU>();
         }
 
-        public override async Task<Maybe<U>> SelectManyAsync<U>(Func<T, Task<Maybe<U>>> some, Func<Task<Maybe<U>>> none)
+        public override Task<Maybe<TU>> SelectManyAsync<TU>(Func<T, Task<Maybe<TU>>> some, Func<Task<Maybe<TU>>> none)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (none == null) throw new ArgumentNullException(nameof(none));
 
-            return await none();
+            return none();
         }
 
-        public override Task<Maybe<U>> SelectManyAsync<U>(Func<T, Task<Maybe<U>>> some)
+        public override Task<Maybe<TU>> SelectManyAsync<TU>(Func<T, Task<Maybe<TU>>> some)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
 
-            return Task.FromResult((Maybe<U>) new None<U>());
+            return Task.FromResult((Maybe<TU>) new None<TU>());
         }
 
         public override void Match(Action<T> some, Action none)

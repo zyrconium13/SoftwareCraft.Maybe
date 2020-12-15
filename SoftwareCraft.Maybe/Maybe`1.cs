@@ -56,7 +56,7 @@ namespace SoftwareCraft.Functional
         public abstract Maybe<U> Select<U>(Func<T, U> some);
 
         public abstract Task<Maybe<U>> SelectAsync<U>(Func<T, Task<U>> some, Func<Task<U>> none);
-        
+
         public abstract Task<Maybe<U>> SelectAsync<U>(Func<T, Task<U>> some);
 
         public abstract Maybe<U> SelectMany<U>(Func<T, Maybe<U>> some, Func<Maybe<U>> none);
@@ -139,6 +139,102 @@ namespace SoftwareCraft.Functional
                 return Maybe.Some(new Tuple<T1, T2, T3, T4, T5>(m1.Value, m2.Value, m3.Value, m4.Value, m5.Value));
 
             return Maybe.None<Tuple<T1, T2, T3, T4, T5>>();
+        }
+
+        public static Maybe<Tuple<T1, T2>> LiftLazy<T1, T2>(
+            Func<Maybe<T1>> f1,
+            Func<Maybe<T2>> f2)
+        {
+            return f1().SelectMany(
+                t1 => f2().SelectMany(
+                    t2 => Maybe.Some(new Tuple<T1, T2>(t1, t2))));
+        }
+
+        public static async Task<Maybe<Tuple<T1, T2>>> LiftLazyAsync<T1, T2>(
+            Func<Task<Maybe<T1>>> f1,
+            Func<Task<Maybe<T2>>> f2)
+        {
+            return await (await f1()).SelectManyAsync(
+                async t1 => (await f2()).Select(
+                    t2 => new Tuple<T1, T2>(t1, t2)));
+        }
+
+        public static Maybe<Tuple<T1, T2, T3>> LiftLazy<T1, T2, T3>(
+            Func<Maybe<T1>> f1,
+            Func<Maybe<T2>> f2,
+            Func<Maybe<T3>> f3)
+        {
+            return f1().SelectMany(
+                t1 => f2().SelectMany(
+                    t2 => f3().SelectMany(
+                        t3 => Maybe.Some(new Tuple<T1, T2, T3>(t1, t2, t3)))));
+        }
+
+        public static async Task<Maybe<Tuple<T1, T2, T3>>> LiftLazyAsync<T1, T2, T3>(
+            Func<Task<Maybe<T1>>> f1,
+            Func<Task<Maybe<T2>>> f2,
+            Func<Task<Maybe<T3>>> f3)
+        {
+            return await (await f1()).SelectManyAsync(
+                async t1 => await (await f2()).SelectManyAsync(
+                    async t2 => (await f3()).Select(
+                        t3 => new Tuple<T1, T2, T3>(t1, t2, t3))));
+        }
+
+        public static Maybe<Tuple<T1, T2, T3, T4>> LiftLazy<T1, T2, T3, T4>(
+            Func<Maybe<T1>> f1,
+            Func<Maybe<T2>> f2,
+            Func<Maybe<T3>> f3,
+            Func<Maybe<T4>> f4)
+        {
+            return f1().SelectMany(
+                t1 => f2().SelectMany(
+                    t2 => f3().SelectMany(
+                        t3 => f4().SelectMany(
+                            t4 => Maybe.Some(new Tuple<T1, T2, T3, T4>(t1, t2, t3, t4))))));
+        }
+
+        public static async Task<Maybe<Tuple<T1, T2, T3, T4>>> LiftLazyAsync<T1, T2, T3, T4>(
+            Func<Task<Maybe<T1>>> f1,
+            Func<Task<Maybe<T2>>> f2,
+            Func<Task<Maybe<T3>>> f3,
+            Func<Task<Maybe<T4>>> f4)
+        {
+            return await (await f1()).SelectManyAsync(
+                async t1 => await (await f2()).SelectManyAsync(
+                    async t2 => await (await f3()).SelectManyAsync(
+                        async t3 => (await f4()).Select(
+                            t4 => new Tuple<T1, T2, T3, T4>(t1, t2, t3, t4)))));
+        }
+
+        public static Maybe<Tuple<T1, T2, T3, T4, T5>> LiftLazy<T1, T2, T3, T4, T5>(
+            Func<Maybe<T1>> f1,
+            Func<Maybe<T2>> f2,
+            Func<Maybe<T3>> f3,
+            Func<Maybe<T4>> f4,
+            Func<Maybe<T5>> f5)
+        {
+            return f1().SelectMany(
+                t1 => f2().SelectMany(
+                    t2 => f3().SelectMany(
+                        t3 => f4().SelectMany(
+                            t4 => f5().SelectMany(
+                                t5 => Maybe.Some(new Tuple<T1, T2, T3, T4, T5>(t1, t2, t3, t4, t5)))))));
+        }
+
+        public static async Task<Maybe<Tuple<T1, T2, T3, T4, T5>>> LiftLazyAsync<T1, T2, T3, T4, T5>(
+            Func<Task<Maybe<T1>>> f1,
+            Func<Task<Maybe<T2>>> f2,
+            Func<Task<Maybe<T3>>> f3,
+            Func<Task<Maybe<T4>>> f4,
+            Func<Task<Maybe<T5>>> f5)
+        {
+            return await (await f1()).SelectManyAsync(
+                async t1 => await (await f2()).SelectManyAsync(
+                    async t2 => await (await f3()).SelectManyAsync(
+                        async t3 => await (await f4()).SelectManyAsync(
+                            async t4 => (await f5()).Select(
+                                t5 => new Tuple<T1, T2, T3, T4, T5>(t1, t2, t3, t4, t5))))));
         }
     }
 }
