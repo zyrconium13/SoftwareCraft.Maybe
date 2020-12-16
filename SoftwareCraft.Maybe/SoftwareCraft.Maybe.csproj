@@ -9,10 +9,10 @@
     <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
     <PackageTags>maybe c-sharp functional-programming dotnet core standard</PackageTags>
-    <PackageReleaseNotes>Added LiftLazy and LiftLazyAsync.</PackageReleaseNotes>
-    <AssemblyVersion>2.0.1.3</AssemblyVersion>
-    <FileVersion>2.0.1.3</FileVersion>
-    <Version>2.0.1.3</Version>
+    <PackageReleaseNotes>Added async overloads for Match.</PackageReleaseNotes>
+    <AssemblyVersion>2.0.1.4</AssemblyVersion>
+    <FileVersion>2.0.1.4</FileVersion>
+    <Version>2.0.1.4</Version>
     <SignAssembly>true</SignAssembly>
     <RootNamespace>SoftwareCraft.Functional</RootNamespace>
     <LangVersion>latest</LangVersion>

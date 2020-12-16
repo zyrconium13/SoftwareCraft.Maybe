@@ -61,7 +61,11 @@ namespace SoftwareCraft.Functional
 
         public abstract void Match(Action<T> some, Action none);
 
+        public abstract Task MatchAsync(Func<T, Task> some, Func<Task> none);
+
         public abstract TOut Match<TOut>(Func<T, TOut> some, Func<TOut> none);
+
+        public abstract Task<TOut> MatchAsync<TOut>(Func<T, Task<TOut>> some, Func<Task<TOut>> none);
 
         public override bool Equals(object obj)
         {
