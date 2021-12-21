@@ -9,14 +9,14 @@
     <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
     <PackageTags>maybe c-sharp functional-programming dotnet core standard</PackageTags>
-    <PackageReleaseNotes>Added async overloads for Match.</PackageReleaseNotes>
-    <AssemblyVersion>2.0.1.4</AssemblyVersion>
-    <FileVersion>2.0.1.4</FileVersion>
-    <Version>2.0.1.4</Version>
+    <PackageReleaseNotes>Added extension methods for lifting.</PackageReleaseNotes>
+    <AssemblyVersion>2.0.2.0</AssemblyVersion>
+    <FileVersion>2.0.2.0</FileVersion>
+    <Version>2.0.2.0</Version>
     <SignAssembly>true</SignAssembly>
     <RootNamespace>SoftwareCraft.Functional</RootNamespace>
     <LangVersion>latest</LangVersion>
-    <AssemblyOriginatorKeyFile>SoftwareCraftKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>D:\OneDrive\Documents\SoftwareCraftKey\SoftwareCraftKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
 </Project>
