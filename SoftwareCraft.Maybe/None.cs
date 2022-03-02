@@ -78,12 +78,19 @@ namespace SoftwareCraft.Functional
             return Task.FromResult((Maybe<U>) new None<U>());
         }
 
+        public override Maybe<T> SelectConditional(Predicate<T> predicate) => new None<T>();
+
         public override void Match(Action<T> some, Action none)
         {
             if (some == null) throw new ArgumentNullException(nameof(some));
             if (none == null) throw new ArgumentNullException(nameof(none));
 
             none();
+        }
+
+        public override void Match(Action<T> some)
+        {
+	        // do nothing
         }
 
         public override Task MatchAsync(Func<T, Task> some, Func<Task> none)

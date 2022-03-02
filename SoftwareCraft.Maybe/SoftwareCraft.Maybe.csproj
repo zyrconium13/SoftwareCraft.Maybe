@@ -9,10 +9,10 @@
     <PackageProjectUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zyrconium13/SoftwareCraft.Maybe</RepositoryUrl>
     <PackageTags>maybe c-sharp functional-programming dotnet core standard</PackageTags>
-    <PackageReleaseNotes>Added extension methods for lifting.</PackageReleaseNotes>
-    <AssemblyVersion>2.0.2.1</AssemblyVersion>
-    <FileVersion>2.0.2.1</FileVersion>
-    <Version>2.0.2.1</Version>
+    <PackageReleaseNotes>Conditional select. Extension method AsMaybe. Match overload only for Some. Cleanup.</PackageReleaseNotes>
+    <AssemblyVersion>2.0.3.0</AssemblyVersion>
+    <FileVersion>2.0.3.0</FileVersion>
+    <Version>2.0.3.0</Version>
     <SignAssembly>true</SignAssembly>
     <RootNamespace>SoftwareCraft.Functional</RootNamespace>
     <LangVersion>latest</LangVersion>
