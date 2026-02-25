@@ -33,28 +33,25 @@ public static class Maybe
 
 		#region Lift3
 
-		public static Maybe<Tuple<T1, T2, T3>> Lift<T1, T2, T3>(Maybe<T1> m1, Maybe<T2> m2, Maybe<T3> m3)
-		{
-			return m1.SelectMany(v1 => m2.SelectMany(v2 => m3.SelectMany(v3 => Maybe.Some(Tuple.Create(v1, v2, v3)))));
-		}
+    public static Maybe<Tuple<T1, T2, T3>> Lift<T1, T2, T3>(
+      Maybe<T1> m1
+    , Maybe<T2> m2
+    , Maybe<T3> m3)
+      => m1.SelectMany(v1 => m2.SelectMany(v2 => m3.Select(v3 => Tuple.Create(v1, v2, v3))));
 
-		public static Maybe<Tuple<T1, T2, T3>> LiftLazy<T1, T2, T3>(Func<Maybe<T1>> f1, Func<Maybe<T2>> f2,
-																	Func<Maybe<T3>> f3)
-		{
-			return f1().SelectMany(
-				v1 => f2().SelectMany(v2 => f3().SelectMany(v3 => Maybe.Some(Tuple.Create(v1, v2, v3)))));
-		}
+    public static Maybe<Tuple<T1, T2, T3>> LiftLazy<T1, T2, T3>(
+      Func<Maybe<T1>> f1
+    , Func<Maybe<T2>> f2
+    , Func<Maybe<T3>> f3)
+      => f1().SelectMany(v1 => f2().SelectMany(v2 => f3().Select(v3 => Tuple.Create(v1, v2, v3))));
 
-		public static async Task<Maybe<Tuple<T1, T2, T3>>> LiftLazyAsync<T1, T2, T3>(
-			Func<Task<Maybe<T1>>> f1, Func<Task<Maybe<T2>>> f2, Func<Task<Maybe<T3>>> f3)
-		{
-			return await (await f1())
-				.SelectManyAsync(async v1 => await (await f2())
-									 .SelectManyAsync(async v2 => (await f3())
-														  .SelectMany(v3 => Maybe.Some(Tuple.Create(v1, v2, v3)))));
-		}
+    public static Task<Maybe<Tuple<T1, T2, T3>>> LiftLazyAsync<T1, T2, T3>(
+      Func<Task<Maybe<T1>>> f1
+    , Func<Task<Maybe<T2>>> f2
+    , Func<Task<Maybe<T3>>> f3)
+      => f1().SelectManyAsync(v1 => f2().SelectManyAsync(v2 => f3().Select(v3 => Tuple.Create(v1, v2, v3))));
 
-		#endregion
+    #endregion
 
 		#region Lift4
 
