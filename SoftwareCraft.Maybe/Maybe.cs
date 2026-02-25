@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 
 namespace SoftwareCraft.Functional;
 
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public static class Maybe
@@ -14,37 +12,19 @@ public static class Maybe
 
 	public static class Lifting
 	{
-		#region Lift2
+    #region Lift2
 
-		public static Maybe<Tuple<T1, T2>> Lift<T1, T2>(Maybe<T1> m1, Maybe<T2> m2)
-		{
-			return m1.SelectMany(v1 => m2.SelectMany(v2 => Maybe.Some(Tuple.Create(v1, v2))));
-		}
-
-    public static Maybe<Tuple<T1, T2>> Lift2<T1, T2>(
+    public static Maybe<Tuple<T1, T2>> Lift<T1, T2>(
       Maybe<T1> m1
     , Maybe<T2> m2)
       => m1.SelectMany(v1 => m2.Select(v2 => Tuple.Create(v1, v2)));
 
-    public static Maybe<Tuple<T1, T2>> LiftLazy<T1, T2>(Func<Maybe<T1>> f1, Func<Maybe<T2>> f2)
-		{
-			return f1().SelectMany(v1 => f2().SelectMany(v2 => Maybe.Some(Tuple.Create(v1, v2))));
-		}
-
-    public static Maybe<Tuple<T1, T2>> LiftLazy2<T1, T2>(
+    public static Maybe<Tuple<T1, T2>> LiftLazy<T1, T2>(
       Func<Maybe<T1>> f1
     , Func<Maybe<T2>> f2)
       => f1().SelectMany(v1 => f2().Select(v2 => Tuple.Create(v1, v2)));
 
-    public static async Task<Maybe<Tuple<T1, T2>>> LiftLazyAsync<T1, T2>(
-			Func<Task<Maybe<T1>>> f1, Func<Task<Maybe<T2>>> f2)
-		{
-			return await (await f1())
-				.SelectManyAsync(async v1 => (await f2())
-									 .SelectMany(v2 => Maybe.Some(Tuple.Create(v1, v2))));
-		}
-
-    public static Task<Maybe<Tuple<T1, T2>>> LiftLazyAsync2<T1, T2>(
+    public static Task<Maybe<Tuple<T1, T2>>> LiftLazyAsync<T1, T2>(
       Func<Task<Maybe<T1>>> f1
     , Func<Task<Maybe<T2>>> f2)
       => f1().SelectManyAsync(v1 => f2().Select(v2 => Tuple.Create(v1, v2)));

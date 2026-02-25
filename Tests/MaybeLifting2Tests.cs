@@ -14,7 +14,7 @@ public sealed class MaybeLifting2Tests
     var m1 = Maybe.Some(13);
     var m2 = Maybe.Some("hello");
 
-    var tuple = Maybe.Lifting.Lift2(m1, m2);
+    var tuple = Maybe.Lifting.Lift(m1, m2);
 
     tuple.Match(
       t =>
@@ -31,7 +31,7 @@ public sealed class MaybeLifting2Tests
     var m1 = Maybe.None<int>();
     var m2 = Maybe.Some("hello");
 
-    var tuple = Maybe.Lifting.Lift2(m1, m2);
+    var tuple = Maybe.Lifting.Lift(m1, m2);
 
     Assert.IsTrue(tuple.IsNone);
   }
@@ -42,7 +42,7 @@ public sealed class MaybeLifting2Tests
     var m1 = Maybe.Some(13);
     var m2 = Maybe.None<string>();
 
-    var tuple = Maybe.Lifting.Lift2(m1, m2);
+    var tuple = Maybe.Lifting.Lift(m1, m2);
 
     Assert.IsTrue(tuple.IsNone);
   }
@@ -53,7 +53,7 @@ public sealed class MaybeLifting2Tests
     var m1 = Maybe.None<int>();
     var m2 = Maybe.None<string>();
 
-    var tuple = Maybe.Lifting.Lift2(m1, m2);
+    var tuple = Maybe.Lifting.Lift(m1, m2);
 
     Assert.IsTrue(tuple.IsNone);
   }
