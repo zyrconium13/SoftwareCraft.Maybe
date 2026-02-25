@@ -55,37 +55,28 @@ public static class Maybe
 
 		#region Lift4
 
-		public static Maybe<Tuple<T1, T2, T3, T4>> Lift<T1, T2, T3, T4>(Maybe<T1> m1, Maybe<T2> m2, Maybe<T3> m3,
-																		Maybe<T4> m4)
-		{
-			return m1.SelectMany(
-				v1 => m2.SelectMany(
-					v2 => m3.SelectMany(v3 => m4.SelectMany(v4 => Maybe.Some(Tuple.Create(v1, v2, v3, v4))))));
-		}
+		public static Maybe<Tuple<T1, T2, T3, T4>> Lift<T1, T2, T3, T4>(
+      Maybe<T1>  m1
+    , Maybe<T2>  m2
+    , Maybe<T3>  m3
+     , Maybe<T4> m4)
+      => m1.SelectMany(v1 => m2.SelectMany(v2 => m3.SelectMany(v3 => m4.Select(v4 => Tuple.Create(v1, v2, v3, v4)))));
 
-		public static Maybe<Tuple<T1, T2, T3, T4>> LiftLazy<T1, T2, T3, T4>(Func<Maybe<T1>> f1, Func<Maybe<T2>> f2,
-																			Func<Maybe<T3>> f3, Func<Maybe<T4>> f4)
-		{
-			return f1().SelectMany(
-				v1 => f2().SelectMany(
-					v2 => f3().SelectMany(
-						v3 => f4().SelectMany(
-							v4 => Maybe.Some(Tuple.Create(v1, v2, v3, v4))))));
-		}
+    public static Maybe<Tuple<T1, T2, T3, T4>> LiftLazy<T1, T2, T3, T4>(
+      Func<Maybe<T1>> f1
+    , Func<Maybe<T2>> f2
+    , Func<Maybe<T3>> f3
+    , Func<Maybe<T4>> f4)
+      => f1().SelectMany(v1 => f2().SelectMany(v2 => f3().SelectMany(v3 => f4().Select(v4 => Tuple.Create(v1, v2, v3, v4)))));
 
-		public static async Task<Maybe<Tuple<T1, T2, T3, T4>>> LiftLazyAsync<T1, T2, T3, T4>(
-			Func<Task<Maybe<T1>>> f1, Func<Task<Maybe<T2>>> f2, Func<Task<Maybe<T3>>> f3, Func<Task<Maybe<T4>>> f4)
-		{
-			return await (await f1())
-				.SelectManyAsync(async v1 => await (await f2())
-									 .SelectManyAsync(async v2 => await (await f3())
-														  .SelectManyAsync(async v3 => (await f4())
-																			   .SelectMany(v4 =>
-																				   Maybe.Some(Tuple.Create(
-																					   v1, v2, v3, v4))))));
-		}
+    public static Task<Maybe<Tuple<T1, T2, T3, T4>>> LiftLazyAsync<T1, T2, T3, T4>(
+      Func<Task<Maybe<T1>>> f1
+    , Func<Task<Maybe<T2>>> f2
+    , Func<Task<Maybe<T3>>> f3
+    , Func<Task<Maybe<T4>>> f4)
+      => f1().SelectManyAsync(v1 => f2().SelectManyAsync(v2 => f3().SelectManyAsync(v3 => f4().Select(v4 => Tuple.Create(v1, v2, v3, v4)))));
 
-		#endregion
+    #endregion
 
 		#region Lift5
 
