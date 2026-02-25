@@ -3,7 +3,8 @@ using BenchmarkDotNet.Running;
 using SoftwareCraft.Functional;
 
 // BenchmarkRunner.Run<EagerLiftingBenchmarks>();
-BenchmarkRunner.Run<LazyLiftingBenchmarks>();
+// BenchmarkRunner.Run<LazyLiftingBenchmarks>();
+BenchmarkRunner.Run<LazyLiftingAsyncBenchmarks>();
 
 [MemoryDiagnoser]
 public class EagerLiftingBenchmarks
@@ -47,4 +48,48 @@ public class LazyLiftingBenchmarks
 
   [Benchmark]
   public Maybe<Tuple<int, string>> LazyLift2D() => Maybe.Lifting.LiftLazy(m3, m4);
+}
+
+[MemoryDiagnoser]
+public class LazyLiftingAsyncBenchmarks
+{
+  private readonly Func<Task<Maybe<int>>> f1 = async () =>
+                                               {
+                                                 await Task.Delay(1);
+
+                                                 return Maybe.Some(13);
+                                               };
+
+  private readonly Func<Task<Maybe<string>>> f2 = async () =>
+                                                  {
+                                                    await Task.Delay(1);
+
+                                                    return Maybe.Some("hello");
+                                                  };
+
+  private readonly Func<Task<Maybe<int>>> m3 = async () =>
+                                               {
+                                                 await Task.Delay(1);
+
+                                                 return Maybe.None<int>();
+                                               };
+
+  private readonly Func<Task<Maybe<string>>> m4 = async () =>
+                                                  {
+                                                    await Task.Delay(1);
+
+                                                    return Maybe.None<string>();
+                                                  };
+
+  [Benchmark]
+  public Task<Maybe<Tuple<int, string>>> LazyLift2A() => Maybe.Lifting.LiftLazyAsync(f1, f2);
+
+  [Benchmark]
+  public Task<Maybe<Tuple<int, string>>> LazyLift2B() => Maybe.Lifting.LiftLazyAsync(f1, m4);
+
+  [Benchmark]
+  public Task<Maybe<Tuple<int, string>>> LazyLift2C() => Maybe.Lifting.LiftLazyAsync(m3, f2);
+
+  [Benchmark]
+  public Task<Maybe<Tuple<int, string>>> LazyLift2D() => Maybe.Lifting.LiftLazyAsync(m3, m4);
 }
