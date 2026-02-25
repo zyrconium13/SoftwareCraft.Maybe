@@ -1,17 +1,16 @@
-﻿using System;
+﻿namespace SoftwareCraft.Functional;
 
-namespace SoftwareCraft.Functional;
-
+using System;
 using System.Threading.Tasks;
 
 public static class Maybe
 {
-	public static Maybe<T> Some<T>(T value) => new Some<T>(value);
+  public static Maybe<T> Some<T>(T value) => new Some<T>(value);
 
-	public static Maybe<T> None<T>() => new None<T>();
+  public static Maybe<T> None<T>() => new None<T>();
 
-	public static class Lifting
-	{
+  public static class Lifting
+  {
     #region Lift2
 
     public static Maybe<Tuple<T1, T2>> Lift<T1, T2>(
@@ -31,7 +30,7 @@ public static class Maybe
 
     #endregion
 
-		#region Lift3
+    #region Lift3
 
     public static Maybe<Tuple<T1, T2, T3>> Lift<T1, T2, T3>(
       Maybe<T1> m1
@@ -53,13 +52,13 @@ public static class Maybe
 
     #endregion
 
-		#region Lift4
+    #region Lift4
 
-		public static Maybe<Tuple<T1, T2, T3, T4>> Lift<T1, T2, T3, T4>(
-      Maybe<T1>  m1
-    , Maybe<T2>  m2
-    , Maybe<T3>  m3
-     , Maybe<T4> m4)
+    public static Maybe<Tuple<T1, T2, T3, T4>> Lift<T1, T2, T3, T4>(
+      Maybe<T1> m1
+    , Maybe<T2> m2
+    , Maybe<T3> m3
+    , Maybe<T4> m4)
       => m1.SelectMany(v1 => m2.SelectMany(v2 => m3.SelectMany(v3 => m4.Select(v4 => Tuple.Create(v1, v2, v3, v4)))));
 
     public static Maybe<Tuple<T1, T2, T3, T4>> LiftLazy<T1, T2, T3, T4>(
@@ -78,45 +77,34 @@ public static class Maybe
 
     #endregion
 
-		#region Lift5
+    #region Lift5
 
-		public static Maybe<Tuple<T1, T2, T3, T4, T5>> Lift<T1, T2, T3, T4, T5>(Maybe<T1> m1, Maybe<T2> m2, Maybe<T3> m3,
-																				Maybe<T4> m4, Maybe<T5> m5)
-		{
-			return m1.SelectMany(
-				v1 => m2.SelectMany(
-					v2 => m3.SelectMany(
-						v3 => m4.SelectMany(
-							v4 => m5.SelectMany(
-								v5 => Maybe.Some(Tuple.Create(v1, v2, v3, v4, v5)))))));
-		}
+    public static Maybe<Tuple<T1, T2, T3, T4, T5>> Lift<T1, T2, T3, T4, T5>(
+      Maybe<T1> m1
+    , Maybe<T2> m2
+    , Maybe<T3> m3
+    , Maybe<T4> m4
+    , Maybe<T5> m5)
+      => m1.SelectMany(v1 => m2.SelectMany(v2 => m3.SelectMany(v3 => m4.SelectMany(v4 => m5.Select(v5 => Tuple.Create(v1, v2, v3, v4, v5))))));
 
-		public static Maybe<Tuple<T1, T2, T3, T4, T5>> LiftLazy<T1, T2, T3, T4, T5>(Func<Maybe<T1>> f1, Func<Maybe<T2>> f2,
-			Func<Maybe<T3>> f3, Func<Maybe<T4>> f4, Func<Maybe<T5>> f5)
-		{
-			return f1().SelectMany(
-				v1 => f2().SelectMany(
-					v2 => f3().SelectMany(
-						v3 => f4().SelectMany(
-							v4 => f5().SelectMany(
-								v5 => Maybe.Some(Tuple.Create(v1, v2, v3, v4, v5)))))));
-		}
+    public static Maybe<Tuple<T1, T2, T3, T4, T5>> LiftLazy<T1, T2, T3, T4, T5>(
+      Func<Maybe<T1>> f1
+    , Func<Maybe<T2>> f2
+    , Func<Maybe<T3>> f3
+    , Func<Maybe<T4>> f4
+    , Func<Maybe<T5>> f5)
+      => f1().SelectMany(v1 => f2().SelectMany(v2 => f3().SelectMany(v3 => f4().SelectMany(v4 => f5().Select(v5 => Tuple.Create(v1, v2, v3, v4, v5)
+                                                                                           )))));
 
-		public static async Task<Maybe<Tuple<T1, T2, T3, T4, T5>>> LiftLazyAsync<T1, T2, T3, T4, T5>(
-			Func<Task<Maybe<T1>>> f1, Func<Task<Maybe<T2>>> f2, Func<Task<Maybe<T3>>> f3, Func<Task<Maybe<T4>>> f4,
-			Func<Task<Maybe<T5>>> f5)
-		{
-			return await (await f1())
-				.SelectManyAsync(async v1 => await (await f2())
-									 .SelectManyAsync(async v2 => await (await f3())
-														  .SelectManyAsync(async v3 => await (await f4())
-																			   .SelectManyAsync(async v4 =>
-																				   (await f5()).SelectMany(v5 =>
-																					   Maybe.Some(Tuple.Create(
-																						   v1, v2, v3, v4,
-																						   v5)))))));
-		}
+    public static Task<Maybe<Tuple<T1, T2, T3, T4, T5>>> LiftLazyAsync<T1, T2, T3, T4, T5>(
+      Func<Task<Maybe<T1>>> f1
+    , Func<Task<Maybe<T2>>> f2
+    , Func<Task<Maybe<T3>>> f3
+    , Func<Task<Maybe<T4>>> f4
+    , Func<Task<Maybe<T5>>> f5)
+      => f1().SelectManyAsync(v1 => f2().SelectManyAsync(v2 => f3().SelectManyAsync(v3 => f4().SelectManyAsync(v4 => f5().Select(v5 => Tuple.Create
+                                                                                              (v1, v2, v3, v4, v5))))));
 
-		#endregion
-	}
+    #endregion
+  }
 }
