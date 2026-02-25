@@ -111,3 +111,48 @@ public static class MaybeExtensions
   public static Maybe<T> Join<T>(this Maybe<Maybe<T>> m)
     => m.Match(Functions.Id, Maybe.None<T>);
 }
+
+public static class TaskExtensions
+{
+  extension<T>(Task<Maybe<T>> @this)
+  {
+    public async Task<Maybe<U>> SelectAsync<U>(Func<T, Task<U>> some, Func<Task<U>> none)
+      => await (await @this).SelectAsync(some, none);
+
+    public async Task<Maybe<U>> SelectAsync<U>(Func<T, Task<U>> some)
+      => await (await @this).SelectAsync(some);
+
+    public async Task<Maybe<U>> Select<U>(Func<T, U> some, Func<U> none)
+      => (await @this).Select(some, none);
+
+    public async Task<Maybe<U>> Select<U>(Func<T, U> some)
+      => (await @this).Select(some);
+
+    public async Task<Maybe<U>> SelectManyAsync<U>(Func<T, Task<Maybe<U>>> some, Func<Task<Maybe<U>>> none)
+      => await (await @this).SelectManyAsync(some, none);
+
+    public async Task<Maybe<U>> SelectManyAsync<U>(Func<T, Task<Maybe<U>>> some)
+      => await (await @this).SelectManyAsync(some);
+
+    public async Task<Maybe<U>> SelectMany<U>(Func<T, Maybe<U>> some, Func<Maybe<U>> none)
+      => (await @this).SelectMany(some, none);
+
+    public async Task<Maybe<U>> SelectMany<U>(Func<T, Maybe<U>> some)
+      => (await @this).SelectMany(some);
+
+    public async Task Match(Action<T> some, Action none)
+      => (await @this).Match(some, none);
+
+    public async Task Match(Action<T> some)
+      => (await @this).Match(some);
+
+    public async Task MatchAsync(Func<T, Task> some, Func<Task> none)
+      => await (await @this).MatchAsync(some, none);
+
+    public async Task<TOut> Match<TOut>(Func<T, TOut> some, Func<TOut> none)
+      => (await @this).Match(some, none);
+
+    public async Task<TOut> MatchAsync<TOut>(Func<T, Task<TOut>> some, Func<Task<TOut>> none)
+      => await (await @this).MatchAsync(some, none);
+  }
+}
